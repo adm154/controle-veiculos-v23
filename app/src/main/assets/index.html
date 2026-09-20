@@ -96,6 +96,47 @@ async function login(){
   }
 
   const {data:empresa,error:ee}=await sb
+    .from('empresas')
+    .select('id,codigo,nome_fantasia,razao_social')
+    .eq('codigo',c.toUpperCase())
+    .maybeSingle();
+
+  if(ee||!empresa){
+    err.textContent='Empresa, usuário ou senha inválidos.';
+    return;
+  }
+
+  const {data:usr,error:ue}=await sb
+    .from('usuarios')
+    .select('id,empresa_id,nome_completo,username,senha,perfil')
+    .eq('empresa_id',empresa.id)
+    .eq('username',u)
+    .eq('senha',p)
+    .maybeSingle();
+
+  if(ue||!usr){
+    err.textContent='Empresa, usuário ou senha inválidos.';
+    return;
+  }
+
+  localStorage.setItem('user', JSON.stringify(usr));
+  location.reload();
+}
+  }
+
+  const c=document.getElementById('loginCompany').value.trim();
+  const u=document.getElementById('loginUser').value.trim().toLowerCase();
+  const p=document.getElementById('loginPass').value.trim();
+  const err=document.getElementById('loginError');
+
+  err.textContent='';
+
+  if(!c||!u||!p){
+    err.textContent='Informe empresa, usuário e senha.';
+    return;
+  }
+
+  const {data:empresa,error:ee}=await sb
   .from('empresas')
   .select('id,codigo,nome_fantasia,razao_social')
   .eq('codigo',c.toUpperCase())
