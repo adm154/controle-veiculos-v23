@@ -1,0 +1,851 @@
+<!doctype html><html lang="pt-BR"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Controle de Veículos — V8 Registrar Entrada e Saída corrigidas</title>
+<style>
+*{box-sizing:border-box}body{margin:0;background:#eaf0f6;font-family:Arial,Helvetica,sans-serif;color:#17324d}.hidden{display:none!important}:root{--blue:#0872d1;--dark:#073b70;--green:#16a35a;--orange:#ed941b;--red:#d94a4a;--line:#dbe4ec}
+.login{min-height:100vh;display:grid;place-items:center;padding:20px;background:linear-gradient(135deg,#06498c,#0877d3)}.login-card{width:min(430px,100%);background:#fff;border-radius:18px;padding:32px;box-shadow:0 15px 45px #001d3a55}.brand{text-align:center;color:var(--dark)}.brand .icon{font-size:48px}.brand h1{font-size:22px;margin:8px 0 3px}.brand p{color:#718294;margin:0 0 25px}.field{margin-bottom:14px}.field label{display:block;font-size:12px;font-weight:bold;margin-bottom:6px}.field input,.field select,.field textarea{width:100%;padding:12px;border:1px solid #cbd8e4;border-radius:9px;font-size:14px}.btn{border:0;border-radius:9px;padding:12px 17px;font-weight:bold;cursor:pointer}.primary{background:var(--blue);color:#fff}.success{background:var(--green);color:#fff}.light{background:#e9f0f6;color:#26445f}.danger{background:var(--red);color:#fff}.login .btn{width:100%;margin-top:8px}.demo{margin-top:18px;padding:12px;background:#f4f7fa;border-radius:10px;font-size:12px;color:#63778a}.error{color:#b52c2c;font-size:12px;margin-top:8px}
+.app{min-height:100vh;background:#f7f9fb}.header{height:70px;background:linear-gradient(90deg,#06498c,#0877d3);color:#fff;display:flex;align-items:center;justify-content:space-between;padding:0 22px}.brandline{display:flex;gap:12px;align-items:center}.truck{font-size:34px}.header strong{font-size:17px}.header small{display:block;opacity:.85;margin-top:3px}.userbox{display:flex;align-items:center;gap:10px;text-align:right;font-size:12px}.userbox b{display:block;font-size:13px}.avatar{width:38px;height:38px;border-radius:50%;background:#ffffff22;display:grid;place-items:center;font-size:20px}.body{display:flex;min-height:calc(100vh - 70px)}.sidebar{width:235px;background:#082f56;padding:15px 11px;color:#fff}.nav{width:100%;border:0;background:transparent;color:#fff;padding:11px;border-radius:9px;text-align:left;cursor:pointer;margin:3px 0;font-size:13px}.nav:hover,.nav.sel{background:#0d558f}.main{flex:1;padding:23px;max-width:1500px}.screen{display:none}.screen.on{display:block}h1{font-size:23px;margin:0 0 5px}.sub{color:#6b7c8e;margin:0 0 18px}.cards{display:grid;grid-template-columns:repeat(4,1fr);gap:13px}.stat{border-radius:12px;padding:16px;color:#fff;min-height:100px;box-shadow:0 2px 7px #0001}.stat b{font-size:27px;display:block;margin:7px 0}.g{background:var(--green)}.b{background:var(--blue)}.o{background:var(--orange)}.r{background:var(--red)}.actions{display:grid;grid-template-columns:repeat(4,1fr);gap:13px;margin-top:15px}.action{border:0;border-radius:12px;padding:18px;text-align:left;color:#fff;cursor:pointer;min-height:90px;box-shadow:0 2px 7px #0001}.action strong{display:block;font-size:15px;margin-top:8px}.a1{background:#0a72d4}.a2{background:#16a35a}.a3{background:#6f3fd0}.a4{background:#5b7187}.panel{background:#fff;border:1px solid var(--line);border-radius:12px;padding:17px;margin-top:15px;box-shadow:0 2px 7px #0000000b}.panel h3{margin:0 0 13px}.search{display:flex;gap:8px}.search input{flex:1}input,select,textarea{width:100%;border:1px solid #cbd8e4;border-radius:8px;padding:11px;font-size:14px;background:#fff}textarea{min-height:70px}.form{display:grid;grid-template-columns:1fr 1fr;gap:13px}.full{grid-column:1/-1}label{display:block;font-size:12px;font-weight:bold;margin:0 0 6px}.actions2{display:flex;gap:8px;justify-content:flex-end;margin-top:14px}.tabs{display:flex;gap:7px;flex-wrap:wrap}.tab{border:1px solid #ccd9e5;border-radius:20px;padding:8px 13px;background:#fff;cursor:pointer}.tab.active{background:#0872d1;color:#fff;border-color:#0872d1}.detail{display:grid;grid-template-columns:repeat(3,1fr);gap:9px}.kv{background:#f4f7fa;border-radius:8px;padding:10px}.kv b{display:block;color:#718294;font-size:10px;margin-bottom:4px}.badge{display:inline-block;border-radius:15px;padding:5px 9px;font-size:11px;font-weight:bold}.ok{background:#def5e7;color:#137a40}.warn{background:#fff0d8;color:#9a6100}.danger-b{background:#fde1e1;color:#a52c2c}.info{background:#dceeff;color:#0759a8}table{width:100%;border-collapse:collapse}th,td{padding:10px;border-bottom:1px solid #e5ebf0;text-align:left;font-size:12px}th{color:#6c7d8f}.company-banner{background:#e8f3ff;border:1px solid #c8e1fa;color:#0759a8;padding:11px 13px;border-radius:10px;margin-bottom:15px;font-size:13px}.successbox{text-align:center;padding:28px}.circle{width:65px;height:65px;border-radius:50%;background:#def5e7;color:#16a35a;font-size:40px;display:grid;place-items:center;margin:auto}.toast{display:none;position:fixed;right:24px;top:88px;background:#17324d;color:#fff;padding:15px 20px;border-radius:10px;z-index:10050;box-shadow:0 8px 24px #0003;font-weight:700;min-width:240px;text-align:center}.mini{font-size:11px;color:#718294}.locked{opacity:.55;pointer-events:none} .entrada-open #vAccess,.entrada-open #vAccess2,.entrada-open #mAccess,.entrada-open #cfAccess{display:none!important}.quick-access{display:flex;gap:10px;flex-wrap:wrap;margin:0 0 15px}.quick-access button{border:1px solid #cbd8e4;background:#fff;color:#17486f;border-radius:10px;padding:10px 15px;font-weight:700;cursor:pointer;box-shadow:0 1px 4px #0000000a}.quick-access button:hover{background:#eef7ff;border-color:#9fc8ea}
+/* Mobile: keep the lateral menu; hide only the internal helper access buttons that must never appear on the page. */
+#vAccess,#vAccess2,#mAccess,#cfAccess{display:none !important;visibility:hidden !important;position:fixed !important;left:-99999px !important;top:-99999px !important;width:1px !important;height:1px !important;overflow:hidden !important;pointer-events:none !important;opacity:0 !important}
+#companyBanner{display:none !important}
+#home > div:first-child > div:first-child{display:none !important}
+.demo{display:none !important}
+@media(max-width:950px){.cards{grid-template-columns:1fr 1fr}.actions{grid-template-columns:1fr 1fr}.sidebar{width:70px}.nav{font-size:0;text-align:center}.nav:first-letter{font-size:18px}.userbox .text{display:none}.main{min-width:0}}@media(max-width:650px){.form,.detail{grid-template-columns:1fr}.cards{grid-template-columns:1fr}.actions{grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin-top:12px}.action{min-width:0;min-height:72px;padding:12px}.action strong{font-size:13px;margin-top:5px}.action small{font-size:11px}.main{padding:13px;min-width:0}.header{padding:0 12px}.header small{display:none}}
+
+#ocMsg.ok{color:#176b3a}#ocMsg.err{color:#a22}
+#ocTable .ocrow{cursor:default}.oc-actions{display:flex;gap:7px;flex-wrap:wrap}.oc-detail{margin-top:10px}
+</style><script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script><script src="https://cdn.sheetjs.com/xlsx-0.20.3/package/dist/xlsx.full.min.js"></script></head><body>
+<div id="login" class="login"><div class="login-card"><div class="brand"><div class="icon">🚛</div><h1>CONTROLE DE VEÍCULOS</h1><p>Acesso por empresa</p></div><div class="field"><label>EMPRESA / CÓDIGO</label><select id="loginCompany"><option value="EMP001">EMP001 — Indústria Alfa</option><option value="EMP002">EMP002 — Distribuidora Beta</option></select></div><div class="field"><label>USUÁRIO</label><input id="loginUser" placeholder="Digite o usuário" autocomplete="username"></div><div class="field"><label>SENHA</label><input id="loginPass" type="password" placeholder="Digite a senha" autocomplete="current-password"></div><button id="loginBtn" class="btn primary" type="button">ENTRAR</button><div id="loginError" class="error"></div><div class="demo"><b>Acesso de teste</b><br>Empresa: EMP001 | usuário: <b>admin</b> | senha: <b>123456</b><br>Portaria: usuário <b>portaria</b> | senha <b>123456</b><hr>Empresa: EMP002 | usuário: <b>admin</b> | senha: <b>123456</b></div></div></div>
+<div id="app" class="app hidden"><header class="header"><div class="brandline"><div class="truck">🚛</div><div><strong>CONTROLE DE ENTRADA E SAÍDA DE VEÍCULOS</strong><small>OC • Clientes / Fornecedores • Veículos • Motoristas • Relatórios</small></div></div><div class="userbox"><div class="text"><b id="topUser"></b><span id="topCompany"></span></div><div class="avatar">👤</div><button class="btn light" onclick="logout()">Sair</button></div></header><div class="body"><aside class="sidebar" id="sidebar"></aside><main class="main"><div id="companyBanner" class="company-banner"></div>
+<section id="home" class="screen on"><div style="display:flex;justify-content:space-between;align-items:flex-start;gap:12px;flex-wrap:wrap"><div><h1>Dashboard</h1><p class="sub">Visão rápida da movimentação da sua empresa.</p></div><button class="btn light" type="button" onclick="refreshFromSupabase()">↻ Atualizar</button></div><div class="cards"><div class="stat g"><span>🚛 Veículos dentro</span><b id="sInside">0</b><small>Em operação na empresa</small></div><div class="stat b"><span>🚪 Entradas hoje</span><b id="sEntries">0</b><small>Movimentações registradas</small></div><div class="stat o"><span>↗️ Saídas hoje</span><b id="sExits">0</b><small>Veículos que já saíram</small></div><div class="stat r"><span>⏱️ Pendentes de saída</span><b id="sPending">0</b><small>Veículos ainda dentro</small></div></div><div class="actions"><button class="action a1" onclick="go('entrada')">🚪<strong>Registrar Entrada</strong><small>OC opcional + placa + motorista</small></button><button class="action a2" onclick="go('saida')">↗️<strong>Registrar Saída</strong><small>Localizar veículo dentro</small></button><button class="action a3" onclick="go('oc')">📄<strong>Consultar OC</strong><small>Ver situação e operação</small></button><button class="action a4" onclick="go('placa')">🔎<strong>Consultar Placa</strong><small>Histórico do veículo</small></button></div><div class="panel"><div style="display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap"><div><h3 style="margin-bottom:3px">Veículos atualmente dentro</h3><div class="mini">Somente veículos com entrada aberta na empresa autenticada.</div></div><span id="insideCountBadge" class="badge info">0 veículo(s)</span></div><div id="insideTable" style="margin-top:12px"></div></div></section>
+<section id="entrada" class="screen"><h1>Registrar Entrada</h1><p class="sub">Registre a chegada de um veículo, com ou sem Ordem de Carregamento.</p><div class="quick-access"><button type="button" onclick="document.getElementById('cfAccess')?.click()">🏢 Clientes / Fornecedores</button><button type="button" onclick="document.getElementById('mAccess')?.click()">👤 Motoristas</button><button type="button" onclick="(document.getElementById('vAccess2')||document.getElementById('vAccess'))?.click()">🚛 Veículos</button></div><div class="panel"><div class="field full"><label>POSSUI ORDEM DE CARREGAMENTO?</label><div style="display:flex;gap:10px;flex-wrap:wrap"><label style="border:1px solid #ccd9e5;border-radius:10px;padding:10px 14px;background:#fff;cursor:pointer"><input type="radio" name="eTemOc" value="SIM" checked onchange="toggleEntradaOc()" style="width:auto;margin-right:7px"> SIM / COM OC</label><label style="border:1px solid #ccd9e5;border-radius:10px;padding:10px 14px;background:#fff;cursor:pointer"><input type="radio" name="eTemOc" value="NAO" onchange="toggleEntradaOc()" style="width:auto;margin-right:7px"> NÃO / SEM OC</label></div></div><div class="form"><div id="eOcBox"><label>NÚMERO DA OC <span id="eOcRequired">*</span></label><input id="eOc" placeholder="Ex.: OC-1001" onblur="previewEntryOC()"><div id="ocPreview" style="margin-top:8px"></div></div><div><label>PLACA *</label><input id="ePlate" placeholder="ABC1D23" onblur="findVehicle()"></div><div><label>MOTORISTA *</label><input id="eDriver" placeholder="Nome do motorista"></div><div><label>OBSERVAÇÃO</label><input id="eObs" placeholder="Opcional"></div></div><div class="actions2"><button class="btn light" onclick="clearEntry()">Limpar</button><button class="btn primary" onclick="registerEntry()">CONFIRMAR ENTRADA</button></div></div></section>
+<section id="saida" class="screen"><h1>Registrar Saída</h1><p class="sub">Informe a placa para localizar a movimentação aberta.</p><div class="panel"><div class="search"><input id="sPlate" placeholder="Digite a placa" oninput="previewExit()"><button class="btn primary" onclick="registerExit()">REGISTRAR SAÍDA</button></div><div id="exitPreview" style="margin-top:15px"></div></div></section>
+<section id="oc" class="screen">
+<h1>Ordens de Carregamento</h1>
+<p class="sub">Cadastre e consulte as OCs da sua empresa.</p>
+<div id="ocCadastroPanel" class="panel">
+  <h3>📄 Nova Ordem de Carregamento</h3>
+  <div class="form">
+    <div><label>NÚMERO DA OC *</label><input id="ocNumero" maxlength="80" placeholder="Ex.: OC-1001"></div>
+    <div><label>TIPO *</label><select id="ocTipo"><option value="">Selecione</option><option value="CLIENTE">Cliente</option><option value="FORNECEDOR">Fornecedor</option></select></div>
+    <div class="full"><label>CLIENTE / FORNECEDOR *</label><select id="ocParceiro"><option value="">Carregando...</option></select><div class="mini" style="margin-top:5px">Somente cadastros ativos da empresa autenticada.</div></div>
+    <div><label>TIPO DE OPERAÇÃO *</label><select id="ocOperacao"><option value="">Selecione</option><option>Carregamento</option><option>Descarregamento</option><option>Coleta</option><option>Entrega</option><option>Serviço</option></select></div>
+    <div><label>PRODUTO / MATERIAL *</label><input id="ocProduto" maxlength="200" placeholder="Opcional"></div>
+    <div><label>QUANTIDADE *</label><input id="ocQuantidade" type="number" min="0" step="0.001" placeholder="Ex.: 20"></div>
+    <div><label>UNIDADE *</label><select id="ocUnidade"><option value="">Selecione</option><option>TON</option><option>KG</option><option>PC</option><option>BD</option><option>SC</option><option>L</option><option>Outro</option></select></div>
+    <div id="ocOutroWrap" style="display:none"><label>OUTRA UNIDADE</label><input id="ocUnidadeOutro" maxlength="80" placeholder="Informe a unidade"></div>
+    <div><label>DESTINO / SETOR *</label><input id="ocDestino" maxlength="200" placeholder="Ex.: Expedição"></div>
+    <div><label>DATA DA OPERAÇÃO *</label><input id="ocData" type="text" inputmode="numeric" maxlength="10" placeholder="dd/mm/aaaa"></div>
+    <div><label>ENTRADA PREVISTA</label><input id="ocDataPrevista" type="text" inputmode="numeric" maxlength="10" placeholder="dd/mm/aaaa"></div>
+    <div class="full"><label>OBSERVAÇÕES</label><textarea id="ocObservacoes" placeholder="Opcional"></textarea></div>
+  </div>
+  <div id="ocMsg" style="margin-top:12px;font-weight:700"></div>
+  <div class="actions2"><button class="btn light" onclick="ocLimpar()">Limpar</button><button class="btn primary" onclick="ocSalvar()">SALVAR OC</button></div>
+</div>
+<div class="panel">
+  <h3>🔎 Consultar OCs</h3>
+  <div class="search"><input id="ocBusca" placeholder="Número da OC, cliente/fornecedor ou status" oninput="renderOCs()"><select id="ocStatusFiltro" onchange="renderOCs()" style="max-width:220px"><option value="">Todos os status</option><option value="AGUARDANDO">🟡 Aguardando</option><option value="EM_OPERACAO">🔵 Em operação</option><option value="ENCERRADA">⚪ Encerrada</option><option value="CANCELADA">🔴 Cancelada</option></select><button class="btn light" onclick="ocAtualizar()">Atualizar</button></div>
+  <div id="ocTable" style="margin-top:14px"></div>
+</div>
+</section>
+<section id="placa" class="screen"><h1>Consultar Placa</h1><p class="sub">Consulte o status e o histórico do veículo.</p><div class="panel"><div class="search"><input id="plateSearch" placeholder="Digite a placa" oninput="renderPlate()"></div><div id="plateResult" style="margin-top:15px"></div></div></section>
+<section id="cadastros" class="screen"><h1>Cadastros</h1><p class="sub">Dados operacionais exclusivos da sua empresa.</p><div class="tabs"><button class="tab active" onclick="showTab('companies',this)">🏢 Empresas</button><button class="tab" onclick="showTab('vehicles',this)">🚚 Veículos</button><button class="tab" onclick="showTab('drivers',this)">👤 Motoristas</button></div><div id="tabContent"></div></section>
+<section id="relatorio" class="screen"><h1>Relatórios</h1><p class="sub">Consulte e filtre as movimentações da empresa logada.</p><div class="panel"><div class="form"><div><label>BUSCAR</label><input id="repBusca" placeholder="Placa, OC ou motorista" oninput="renderReports()"></div><div><label>STATUS</label><select id="repStatus" onchange="renderReports()"><option value="">Todos</option><option value="DENTRO">Na base</option><option value="ENCERRADA">Encerradas</option></select></div><div><label>DATA INICIAL</label><input id="repDe" type="text" inputmode="numeric" maxlength="10" placeholder="dd/mm/aaaa" oninput="renderReports()"></div><div><label>DATA FINAL</label><input id="repAte" type="text" inputmode="numeric" maxlength="10" placeholder="dd/mm/aaaa" oninput="renderReports()"></div></div><div class="cards" style="margin-top:15px"><div class="stat b"><span>Total de movimentos</span><b id="rTotal">0</b></div><div class="stat g"><span>Entradas</span><b id="rEntries">0</b></div><div class="stat o"><span>Saídas</span><b id="rExits">0</b></div><div class="stat r"><span>Dentro agora</span><b id="rInside">0</b></div></div><div id="reportSummary" class="mini" style="margin-top:10px"></div><div id="reportTable" style="margin-top:15px"></div><div class="actions2"><button class="btn light" onclick="window.print()">🖨️ Imprimir / PDF</button><button class="btn light" onclick="exportCSV()">📄 Exportar CSV</button><button class="btn primary" onclick="exportXLSX()">📊 Exportar Excel (.xlsx)</button></div></div></section>
+<section id="historico" class="screen"><h1>Histórico de Entradas e Saídas</h1><p class="sub">Consulte todas as movimentações da empresa logada.</p><div class="panel"><div class="form"><div><label>BUSCAR</label><input id="histBusca" placeholder="Placa, OC ou motorista" oninput="renderHistory()"></div><div><label>STATUS</label><select id="histStatus" onchange="renderHistory()"><option value="">Todos</option><option value="DENTRO">Na base</option><option value="ENCERRADA">Encerradas</option></select></div><div><label>DATA INICIAL</label><input id="histDe" type="text" inputmode="numeric" maxlength="10" placeholder="dd/mm/aaaa" oninput="renderHistory()"></div><div><label>DATA FINAL</label><input id="histAte" type="text" inputmode="numeric" maxlength="10" placeholder="dd/mm/aaaa" oninput="renderHistory()"></div></div><div id="historySummary" class="mini" style="margin-top:10px"></div><div id="historyTable" style="margin-top:14px"></div></div></section>
+<section id="usuarios" class="screen"><h1>Usuários e Permissões</h1><p class="sub">Administre somente os usuários secundários da empresa autenticada.</p><div class="panel"><div class="company-banner" style="margin-bottom:14px"><b>🔐 Administrador da Empresa</b> — você pode criar e editar usuários Portaria e Administrativo, ativar/desativar e redefinir a senha. O usuário Administrador não pode ser alterado aqui.</div><div class="actions2" style="justify-content:flex-start;margin-top:0;margin-bottom:12px"><button class="btn primary" type="button" onclick="abrirCriacaoUsuario()">➕ CRIAR USUÁRIO</button></div><div id="usersMsg" class="mini" style="margin-bottom:10px"></div><div id="usersTable"></div></div><div id="userCreatePanel" class="panel hidden"><h3>➕ Criar usuário secundário</h3><div class="mini" style="margin-bottom:12px">Crie somente usuários Portaria ou Administrativo para a empresa autenticada.</div><div class="form"><div><label>USUÁRIO *</label><input id="uCreateUsername" maxlength="60" placeholder="Ex.: operador01"></div><div><label>NOME COMPLETO *</label><input id="uCreateName" maxlength="150" placeholder="Nome completo"></div><div><label>E-MAIL *</label><input id="uCreateEmail" type="email" maxlength="200" placeholder="usuario@empresa.com"></div><div><label>TELEFONE</label><input id="uCreatePhone" maxlength="40" placeholder="Opcional"></div><div><label>PERFIL *</label><select id="uCreateProfile"><option value="PORTARIA">Portaria</option><option value="ADMINISTRATIVO">Administrativo</option></select></div><div><label>SENHA INICIAL *</label><input id="uCreatePassword" type="password" minlength="6" placeholder="Mínimo de 6 caracteres"></div><div><label>CONFIRMAR SENHA *</label><input id="uCreatePassword2" type="password" minlength="6"></div></div><div id="uCreateMsg" class="mini" style="margin-top:10px"></div><div class="actions2"><button class="btn light" type="button" onclick="fecharCriacaoUsuario()">Cancelar</button><button class="btn primary" type="button" onclick="criarUsuarioSecundario()">CRIAR USUÁRIO</button></div></div><div id="userEditPanel" class="panel hidden"><h3>✏️ Editar usuário secundário</h3><div class="form"><div><label>USUÁRIO</label><input id="uEditUsername" disabled></div><div><label>EMPRESA</label><input id="uEditCompany" disabled></div><div><label>NOME COMPLETO *</label><input id="uEditName"></div><div><label>E-MAIL *</label><input id="uEditEmail" type="email"></div><div><label>TELEFONE</label><input id="uEditPhone"></div><div><label>PERFIL *</label><select id="uEditProfile"><option value="PORTARIA">Portaria</option><option value="ADMINISTRATIVO">Administrativo</option></select></div><div><label>STATUS</label><select id="uEditActive"><option value="true">Ativo</option><option value="false">Inativo</option></select></div></div><div id="uEditMsg" class="mini" style="margin-top:10px"></div><div class="actions2"><button class="btn light" type="button" onclick="fecharEdicaoUsuario()">Cancelar</button><button class="btn primary" type="button" onclick="salvarUsuarioSecundario()">SALVAR ALTERAÇÕES</button></div><div style="border-top:1px solid #e5ebf0;margin-top:16px;padding-top:16px"><h3 style="margin-bottom:8px">🔑 Redefinir senha</h3><div class="form"><div><label>NOVA SENHA *</label><input id="uNewPassword" type="password" minlength="6" placeholder="Mínimo de 6 caracteres"></div><div><label>CONFIRMAR NOVA SENHA *</label><input id="uNewPassword2" type="password" minlength="6"></div></div><div id="uPassMsg" class="mini" style="margin-top:10px"></div><div class="actions2"><button class="btn success" type="button" onclick="redefinirSenhaUsuario()">REDEFINIR SENHA</button></div></div></div></section>
+<section id="auditoria" class="screen"><h1>Auditoria</h1><p class="sub">Registro das principais ações realizadas nesta empresa.</p><div class="panel"><div id="auditTable"></div></div></section>
+</main></div></div><div id="toast" class="toast"></div>
+<script>
+const companies={EMP001:{name:'Indústria Alfa'},EMP002:{name:'Distribuidora Beta'}};
+const users=[{company:'EMP001',user:'admin',name:'Administrador Alfa',role:'Administrador',pass:'1234'},{company:'EMP001',user:'portaria',name:'Portaria Alfa',role:'Portaria',pass:'1234'},{company:'EMP002',user:'admin',name:'Administrador Beta',role:'Administrador',pass:'1234'}];
+let state=JSON.parse(localStorage.getItem('cv_v1_state')||'null')||{ocs:{EMP001:[{num:'1001',type:'Cliente',company:'Cliente Exemplo',op:'Carregamento',product:'Produto A',volume:'20 TON',dest:'Expedição',date:new Date().toISOString().slice(0,10),status:'AGUARDANDO'}],EMP002:[]},vehicles:{EMP001:[],EMP002:[]},drivers:{EMP001:[],EMP002:[]},moves:{EMP001:[],EMP002:[]},audit:{EMP001:[],EMP002:[]}};
+let session=null;
+function save(){localStorage.setItem('cv_v1_state',JSON.stringify(state))}
+const SUPABASE_URL='https://sybsplfizklerwoxulca.supabase.co';
+const SUPABASE_KEY='sb_publishable_FLT3evY8UiqK4_ZxsH-Zfw_iWKhfttP';
+const sb=supabase.createClient(SUPABASE_URL,SUPABASE_KEY);
+async function headers(){const {data}=await sb.auth.getSession();const token=data.session?.access_token;if(!token) throw Error('Sessão expirada. Faça login novamente.');return {apikey:SUPABASE_KEY,Authorization:'Bearer '+token,'Content-Type':'application/json'}}
+async function hdr(){return headers();}
+async function getEmpresa(){
+  const {data}=await sb.auth.getSession();
+  const uid=data.session?.user?.id;
+  if(!uid) throw Error('Sessão expirada. Faça login novamente.');
+  const h=await headers();
+  const r=await fetch(SUPABASE_URL+'/rest/v1/usuarios?select=empresa_id&auth_user_id=eq.'+encodeURIComponent(uid)+'&limit=1',{headers:h});
+  if(!r.ok) throw Error('Não foi possível identificar a empresa.');
+  const a=await r.json();
+  if(!a.length) throw Error('Usuário não vinculado a uma empresa.');
+  return a[0].empresa_id;
+}
+const authEmails={EMP001:{admin:'admin@alfa.local',portaria:'portaria@alfa.local'},EMP002:{admin:'admin@beta.local'}};
+if(location.protocol==='file:'){document.getElementById('loginError').textContent='Abra este aplicativo pelo endereço http://localhost:5501 (não diretamente pelo arquivo HTML).';}
+async function login(){if(location.protocol==='file:'){document.getElementById('loginError').textContent='Este arquivo precisa ser aberto pelo servidor local em http://localhost:5501.';return}const c=document.getElementById('loginCompany').value;const u=document.getElementById('loginUser').value.trim().toLowerCase();const p=document.getElementById('loginPass').value.trim();const err=document.getElementById('loginError');err.textContent='';let email=authEmails[c]?.[u];if(!email){const {data:lu,error:le}=await sb.from('usuarios').select('email,ativo,empresa_id,empresas(codigo)').eq('username',u).eq('empresas.codigo',c).maybeSingle();if(le){console.error(le);err.textContent='Não foi possível localizar o usuário.';return}if(!lu||!lu.email){err.textContent='Usuário não cadastrado para esta empresa.';return}if(lu.ativo===false){err.textContent='Usuário inativo. Procure o Administrador da empresa.';return}email=lu.email}const {data,error}=await sb.auth.signInWithPassword({email,password:p});if(error){err.textContent='Login recusado pelo Supabase: '+(error.message||'verifique e-mail e senha.');console.error('Supabase Auth error',error);return}const {data:profile,error:pe}=await sb.from('usuarios').select('id,nome_completo,username,perfil,empresa_id,empresas(codigo,nome_fantasia)').eq('auth_user_id',data.user.id).single();if(pe||!profile||profile.empresas?.codigo!==c){await sb.auth.signOut();err.textContent='Usuário não pertence à empresa selecionada.';return}const perfilAtual=String(profile.perfil||'').toUpperCase();if(!['ADMINISTRADOR','ADMINISTRATIVO','PORTARIA'].includes(perfilAtual)){await sb.auth.signOut();err.textContent='Perfil de usuário inválido.';return}session={company:c,user:profile.username,name:profile.nome_completo,role:perfilAtual,authId:data.user.id,empresaId:profile.empresa_id,email:email};document.getElementById('login').classList.add('hidden');document.getElementById('app').classList.remove('hidden');document.getElementById('topUser').textContent=session.name+' • '+session.role;document.getElementById('topCompany').textContent=profile.empresas.nome_fantasia+' ('+c+')';buildNav();await refreshFromSupabase();go('home')}
+async function restoreSession(){
+  try{
+    const {data,error}=await sb.auth.getSession();
+    if(error || !data.session) return;
+    const uid=data.session.user.id;
+    const {data:profile,error:pe}=await sb.from('usuarios').select('id,nome_completo,username,perfil,empresa_id,empresas(codigo,nome_fantasia)').eq('auth_user_id',uid).single();
+    if(pe || !profile || !profile.empresas?.codigo){ await sb.auth.signOut(); return; }
+    const perfilAtual=String(profile.perfil||'').toUpperCase();
+    if(!['ADMINISTRADOR','ADMINISTRATIVO','PORTARIA'].includes(perfilAtual)){ await sb.auth.signOut(); return; }
+    session={company:profile.empresas.codigo,user:profile.username,name:profile.nome_completo,role:perfilAtual,authId:uid,empresaId:profile.empresa_id,email:data.session.user.email||''};
+    document.getElementById('login').classList.add('hidden');
+    document.getElementById('app').classList.remove('hidden');
+    document.getElementById('topUser').textContent=session.name+' • '+session.role;
+    document.getElementById('topCompany').textContent=profile.empresas.nome_fantasia+' ('+session.company+')';
+    buildNav();
+    await refreshFromSupabase();
+    go('home');
+  }catch(e){ console.error('Falha ao restaurar sessão',e); }
+}
+
+async function refreshFromSupabase(){try{const {data:veiculos,error:ve} = await sb.from('veiculos').select('id,placa,tipo,modelo').order('placa');if(ve)throw ve;const {data:movs,error:me}=await sb.from('movimentacoes').select('id,empresa_id,oc_id,veiculo_id,motorista_id,entrada_em,saida_em,observacao_entrada,veiculos(placa),motoristas(nome_completo),ordens_carregamento(numero_oc,tipo_empresa,tipo_operacao,produto_material,quantidade,unidade,unidade_outro,destino_setor,status,clientes_fornecedores(nome_razao_social,tipo))').order('entrada_em',{ascending:false});if(me)throw me;const key=session.company;state.vehicles[key]=(veiculos||[]).map(v=>({id:v.id,plate:v.placa,type:v.tipo,model:v.modelo}));state.moves[key]=(movs||[]).filter(m=>m.empresa_id===session.empresaId).map(m=>({id:m.id,oc_id:m.oc_id||null,oc:m.ordens_carregamento?.numero_oc||'',plate:m.veiculos?.placa||'',driver:m.motoristas?.nome_completo||'',entry:m.entrada_em,exit:m.saida_em||null,company:session.company,observacao:m.observacao_entrada||'',clienteFornecedor:m.ordens_carregamento?.clientes_fornecedores?.nome_razao_social||'',tipoClienteFornecedor:m.ordens_carregamento?.clientes_fornecedores?.tipo||'',operacao:m.ordens_carregamento?.tipo_operacao||'',produto:m.ordens_carregamento?.produto_material||'',quantidade:m.ordens_carregamento?.quantidade??null,unidade:m.ordens_carregamento?.unidade||'',unidadeOutro:m.ordens_carregamento?.unidade_outro||'',destino:m.ordens_carregamento?.destino_setor||'',statusOc:m.ordens_carregamento?.status||''}));save();refresh()}catch(e){console.error(e);toast('Não foi possível carregar os dados de movimentação do banco.')}}
+async function logout(){
+  try { await sb.auth.signOut(); } catch(e) { console.error('Erro ao encerrar sessão',e); }
+  session=null;
+  document.body.classList.remove('entrada-open');
+  document.getElementById('app').classList.add('hidden');
+  document.getElementById('login').classList.remove('hidden');
+  document.getElementById('loginPass').value='';
+  document.getElementById('loginError').textContent='';
+  document.getElementById('loginUser').focus();
+  window.scrollTo(0,0);
+}
+function buildNav(){const admin=session.role==='ADMINISTRADOR';const administrativo=session.role==='ADMINISTRATIVO';const portaria=session.role==='PORTARIA';let html='<button class="nav sel" onclick="go(\'home\',this)">🏠 &nbsp; Início</button><button class="nav" onclick="go(\'entrada\',this)">🚪 &nbsp; Registrar Entrada</button><button class="nav" onclick="go(\'saida\',this)">↗️ &nbsp; Registrar Saída</button><button class="nav" onclick="go(\'placa\',this)">🔎 &nbsp; Consultar Placa</button><button class="nav" onclick="go(\'historico\',this)">🕘 &nbsp; Histórico</button>';if(admin||administrativo){html+='<button class="nav" onclick="go(\'oc\',this)">📄 &nbsp; Ordens de Carregamento</button><button class="nav" onclick="go(\'cadastros\',this)">🏢 &nbsp; Cadastros</button><button class="nav" onclick="go(\'relatorio\',this)">📊 &nbsp; Relatórios</button>';}else if(portaria){html+='<button class="nav" onclick="go(\'oc\',this)">📄 &nbsp; Consultar OC</button>';}if(admin){html+='<button class="nav" onclick="go(\'usuarios\',this)">👥 &nbsp; Usuários</button><button class="nav" onclick="go(\'auditoria\',this)">🛡️ &nbsp; Auditoria</button>';}sidebar.innerHTML=html;}
+function permissaoTela(id){if(!session)return false;if(['home','entrada','saida','placa','historico','oc'].includes(id))return true;if(['cadastros','relatorio'].includes(id))return session.role==='ADMINISTRADOR'||session.role==='ADMINISTRATIVO';if(['usuarios','auditoria'].includes(id))return session.role==='ADMINISTRADOR';return false;}
+function go(id,btn){if(!permissaoTela(id)){alert('Seu perfil não possui permissão para acessar esta área.');return;}document.querySelectorAll('.screen').forEach(x=>x.classList.remove('on'));document.getElementById(id).classList.add('on');document.querySelectorAll('.nav').forEach(x=>x.classList.remove('sel'));if(btn)btn.classList.add('sel');document.body.classList.toggle('entrada-open',id==='entrada');if(id==='oc'){const cadastro=document.getElementById('ocCadastroPanel');if(cadastro)cadastro.style.display=session.role==='PORTARIA'?'none':'';}refresh();if(id==='oc'&&typeof window.ocAbrir==='function')window.ocAbrir();}
+function refresh(){if(!session)return;renderDashboard();renderPlate();renderCadastros('companies');renderHistory();renderReports();renderUsers();renderAudit();}
+function today(){return new Date().toISOString().slice(0,10)}
+function companyData(k){return state[k][session.company]}
+function renderDashboard(){const m=companyData('moves'),inside=m.filter(x=>!x.exit);sInside.textContent=inside.length;sEntries.textContent=m.filter(x=>x.entry&&x.entry.slice(0,10)===today()).length;sExits.textContent=m.filter(x=>x.exit&&x.exit.slice(0,10)===today()).length;sPending.textContent=inside.length;const b=document.getElementById('insideCountBadge');if(b)b.textContent=inside.length+' veículo(s)';insideTable.innerHTML=inside.length?'<div style="overflow:auto"><table><thead><tr><th>Placa</th><th>Cliente / Fornecedor</th><th>Produto / Material</th><th>Volume</th><th>Motorista</th><th>OC</th><th>Entrada</th><th>Status</th></tr></thead><tbody>'+inside.map(x=>`<tr><td><b>${x.plate}</b></td><td>${x.clienteFornecedor||'—'}</td><td>${x.produto||'Entrada sem OC'}</td><td>${x.quantidade!=null ? (String(x.quantidade)+' '+(x.unidade==='Outro' ? (x.unidadeOutro||'Outro') : (x.unidade||''))).trim() : '—'}</td><td>${x.driver||'—'}</td><td>${x.oc||'SEM OC'}</td><td>${fmt(x.entry)}</td><td><span class="badge info">🔵 NA BASE</span></td></tr>`).join('')+'</tbody></table></div>':'<div class="mini">Nenhum veículo dentro no momento.</div>'}
+function findVehicle(){const p=ePlate.value.trim().toUpperCase();const v=companyData('vehicles').find(x=>x.plate===p);if(v&&!eDriver.value)eDriver.value=v.driver||''}
+async function registerEntry(){
+  try{
+    const plate=document.getElementById('ePlate').value.trim().toUpperCase();
+    const driverName=document.getElementById('eDriver').value.trim();
+    const obs=document.getElementById('eObs').value.trim();
+    const hasOc=document.querySelector('input[name="eTemOc"]:checked')?.value==='SIM';
+    const ocNumber=document.getElementById('eOc').value.trim();
+    if(!plate||!driverName){toast('Preencha a placa e o motorista.');return}
+    if(hasOc&&!ocNumber){toast('Informe o número da OC ou selecione Sem OC.');return}
+    const h=await headers();
+    const empresa_id=await getEmpresa();
+    const vr=await fetch(SUPABASE_URL+'/rest/v1/veiculos?select=id,placa&empresa_id=eq.'+encodeURIComponent(empresa_id)+'&placa=eq.'+encodeURIComponent(plate)+'&limit=1',{headers:h});
+    if(!vr.ok) throw Error(await vr.text());
+    const va=await vr.json();
+    if(!va.length){toast('Veículo não cadastrado nesta empresa. Cadastre a placa antes da entrada.');return}
+    const dr=await fetch(SUPABASE_URL+'/rest/v1/motoristas?select=id,nome_completo&empresa_id=eq.'+encodeURIComponent(empresa_id)+'&nome_completo=eq.'+encodeURIComponent(driverName)+'&limit=1',{headers:h});
+    if(!dr.ok) throw Error(await dr.text());
+    const da=await dr.json();
+    if(!da.length){toast('Motorista não cadastrado nesta empresa. Cadastre o motorista antes da entrada.');return}
+    let oc_id=null;
+    if(hasOc){
+      const or=await fetch(SUPABASE_URL+'/rest/v1/ordens_carregamento?select=id,numero_oc,status&empresa_id=eq.'+encodeURIComponent(empresa_id)+'&numero_oc=eq.'+encodeURIComponent(ocNumber)+'&limit=1',{headers:h});
+      if(!or.ok) throw Error(await or.text());
+      const oa=await or.json();
+      if(!oa.length){toast('OC não encontrada nesta empresa.');return}
+      if(['CANCELADA','ENCERRADA'].includes(oa[0].status)){toast('Esta OC não pode receber entrada.');return}
+      oc_id=oa[0].id;
+    }
+    const rr=await fetch(SUPABASE_URL+'/rest/v1/rpc/registrar_entrada',{method:'POST',headers:{...h,'Content-Type':'application/json'},body:JSON.stringify({p_empresa_id:empresa_id,p_oc_id:oc_id,p_veiculo_id:va[0].id,p_motorista_id:da[0].id,p_observacao:obs||null})});
+    if(!rr.ok) throw Error(await rr.text());
+    const result=await rr.json();
+    clearEntry();
+    await refreshFromSupabase();
+    go('home');
+    toast('ENTRADA REGISTRADA');
+  }catch(e){console.error(e);toast('Erro ao registrar entrada: '+(e.message||e))}
+}
+function toggleEntradaOc(){const sim=document.querySelector('input[name="eTemOc"]:checked')?.value==='SIM';document.getElementById('eOcBox').style.display=sim?'block':'none';if(!sim){document.getElementById('eOc').value='';document.getElementById('ocPreview').innerHTML=''}}
+async function previewEntryOC(){const n=document.getElementById('eOc').value.trim();if(!n)return;try{const h=await headers();const r=await fetch(SUPABASE_URL+'/rest/v1/ordens_carregamento?select=numero_oc,status,tipo_operacao,produto_material,quantidade,unidade,destino_setor&numero_oc=eq.'+encodeURIComponent(n)+'&limit=1',{headers:h});const a=await r.json();document.getElementById('ocPreview').innerHTML=a.length?'<div class="detail">'+kv('OC',a[0].numero_oc)+kv('Status',status(a[0].status))+kv('Operação',a[0].tipo_operacao||'-')+kv('Produto',a[0].produto_material||'-')+kv('Destino',a[0].destino_setor||'-')+'</div>':'<div class="mini">OC não encontrada nesta empresa.</div>'}catch(e){document.getElementById('ocPreview').innerHTML='<div class="mini">Não foi possível consultar a OC.</div>'}}
+
+function clearEntry(){document.getElementById('eOc').value='';document.getElementById('ePlate').value='';document.getElementById('eDriver').value='';document.getElementById('eObs').value='';document.getElementById('ocPreview').innerHTML='';document.querySelector('input[name="eTemOc"][value="SIM"]').checked=true;toggleEntradaOc()}
+setTimeout(toggleEntradaOc,0);
+async function previewExit(){const p=sPlate.value.trim().toUpperCase();if(!p){exitPreview.innerHTML='<div class="mini">Digite uma placa que esteja dentro da empresa.</div>';return}try{const empresa_id=await getEmpresa();const h=await headers();const vr=await fetch(SUPABASE_URL+'/rest/v1/veiculos?select=id,placa&empresa_id=eq.'+encodeURIComponent(empresa_id)+'&placa=eq.'+encodeURIComponent(p)+'&limit=1',{headers:h});if(!vr.ok)throw Error(await vr.text());const va=await vr.json();if(!va.length){exitPreview.innerHTML='<div class="mini">Placa não cadastrada nesta empresa.</div>';return}const mr=await fetch(SUPABASE_URL+'/rest/v1/movimentacoes?select=id,oc_id,veiculo_id,motorista_id,entrada_em,saida_em,observacao_entrada,ordens_carregamento(numero_oc),motoristas(nome_completo)&empresa_id=eq.'+encodeURIComponent(empresa_id)+'&veiculo_id=eq.'+encodeURIComponent(va[0].id)+'&saida_em=is.null&order=entrada_em.desc&limit=1',{headers:h});if(!mr.ok)throw Error(await mr.text());const ma=await mr.json();const m=ma[0];exitPreview.innerHTML=m?'<div class="detail">'+kv('Placa',p)+kv('OC',m.ordens_carregamento?.numero_oc||'SEM OC')+kv('Empresa',session.company)+kv('Motorista',m.motoristas?.nome_completo||'-')+kv('Entrada',fmt(m.entrada_em))+kv('Permanência',duration(m.entrada_em))+'</div>':'<div class="mini">Nenhuma entrada aberta encontrada para esta placa.</div>'}catch(e){console.error(e);exitPreview.innerHTML='<div class="mini">Não foi possível consultar a entrada no banco.</div>'}}
+async function registerExit(){try{const p=sPlate.value.trim().toUpperCase();if(!p){toast('Informe a placa.');return}const empresa_id=await getEmpresa();const h=await headers();const vr=await fetch(SUPABASE_URL+'/rest/v1/veiculos?select=id,placa&empresa_id=eq.'+encodeURIComponent(empresa_id)+'&placa=eq.'+encodeURIComponent(p)+'&limit=1',{headers:h});if(!vr.ok)throw Error(await vr.text());const va=await vr.json();if(!va.length){toast('Placa não cadastrada nesta empresa.');return}const mr=await fetch(SUPABASE_URL+'/rest/v1/movimentacoes?select=id,oc_id,entrada_em&empresa_id=eq.'+encodeURIComponent(empresa_id)+'&veiculo_id=eq.'+encodeURIComponent(va[0].id)+'&saida_em=is.null&order=entrada_em.desc&limit=1',{headers:h});if(!mr.ok)throw Error(await mr.text());const ma=await mr.json();const m=ma[0];if(!m){toast('Nenhuma entrada aberta encontrada para esta placa.');return}const uid=(await sb.auth.getSession()).data.session?.user?.id;if(!uid)throw Error('Sessão expirada. Faça login novamente.');const ur=await fetch(SUPABASE_URL+'/rest/v1/usuarios?select=id&auth_user_id=eq.'+encodeURIComponent(uid)+'&empresa_id=eq.'+encodeURIComponent(empresa_id)+'&limit=1',{headers:h});if(!ur.ok)throw Error(await ur.text());const ua=await ur.json();if(!ua.length)throw Error('Usuário do sistema não encontrado para esta sessão.');const up=await fetch(SUPABASE_URL+'/rest/v1/movimentacoes?id=eq.'+encodeURIComponent(m.id)+'&empresa_id=eq.'+encodeURIComponent(empresa_id),{method:'PATCH',headers:{...h,'Prefer':'return=minimal'},body:JSON.stringify({saida_em:new Date().toISOString(),saida_usuario_id:ua[0].id})});if(!up.ok)throw Error(await up.text());if(m.oc_id){const op=await fetch(SUPABASE_URL+'/rest/v1/ordens_carregamento?id=eq.'+encodeURIComponent(m.oc_id)+'&empresa_id=eq.'+encodeURIComponent(empresa_id),{method:'PATCH',headers:{...h,'Prefer':'return=minimal'},body:JSON.stringify({status:'ENCERRADA'})});if(!op.ok)throw Error(await op.text())}toast('SAÍDA REGISTRADA COM SUCESSO');sPlate.value='';exitPreview.innerHTML='';await refreshFromSupabase()}catch(e){console.error(e);toast('Erro ao registrar saída: '+(e.message||e))}}
+function createOC(){const num=newOcNum.value.trim(),co=newOcCompany.value.trim(),dest=newOcDest.value.trim();if(!num||!co||!dest){toast('Preencha número, empresa e destino/setor.');return}if(companyData('ocs').some(x=>x.num===num)){toast('Número de OC já existe nesta empresa.');return}companyData('ocs').push({num,type:newOcType.value,company:co,op:newOcOp.value,product:newOcProduct.value,volume:newOcVolume.value,dest,date:newOcDate.value||today(),status:'AGUARDANDO',obs:newOcObs.value});addAudit('CADASTRO OC',`OC ${num}`);save();['newOcNum','newOcCompany','newOcProduct','newOcVolume','newOcDest','newOcObs'].forEach(id=>document.getElementById(id).value='');toast('OC cadastrada com sucesso');refresh()}
+function renderPlate(){if(!session)return;const p=(plateSearch?.value||'').trim().toUpperCase();if(!p){plateResult.innerHTML='<div class="mini">Informe uma placa para consultar.</div>';return}const v=companyData('vehicles').find(x=>x.plate===p),ms=companyData('moves').filter(x=>x.plate===p).sort((a,b)=>b.entry.localeCompare(a.entry));if(!v&&!ms.length){plateResult.innerHTML='<div class="mini">Placa não encontrada nesta empresa.</div>';return}plateResult.innerHTML='<div class="detail">'+kv('Placa',p)+kv('Status',ms.some(x=>!x.exit)?'<span class="badge ok">🟢 NA BASE</span>':'<span class="badge info">⚪ FORA</span>')+kv('Motorista',v?.driver||ms[0]?.driver||'-')+'</div><div style="margin-top:14px"><table><tr><th>OC</th><th>Empresa</th><th>Entrada</th><th>Saída</th><th>Permanência</th></tr>'+ms.map(x=>`<tr><td>${x.oc}</td><td>${x.company}</td><td>${fmt(x.entry)}</td><td>${x.exit?fmt(x.exit):'—'}</td><td>${x.exit?duration(x.entry,x.exit):duration(x.entry)}</td></tr>`).join('')+'</table></div>'}
+function renderCadastros(tab){if(!session)return;document.querySelectorAll('.tab').forEach(x=>x.classList.remove('active'));const tabs=[...document.querySelectorAll('.tab')];if(tab==='companies')tabs[0]?.classList.add('active');if(tab==='vehicles')tabs[1]?.classList.add('active');if(tab==='drivers')tabs[2]?.classList.add('active');if(tab==='companies')tabContent.innerHTML='<div class="panel"><h3>Clientes / Fornecedores</h3><div class="form"><div><label>NOME / RAZÃO SOCIAL</label><input id="cName"></div><div><label>TIPO</label><select id="cType"><option>Cliente</option><option>Fornecedor</option></select></div></div><div class="actions2"><button class="btn primary" onclick="addCompany()">CADASTRAR</button></div></div><div class="panel"><table><tr><th>Nome</th><th>Tipo</th></tr>'+companyData('ocs').map(x=>`<tr><td>${x.company}</td><td>${x.type}</td></tr>`).filter((v,i,a)=>a.indexOf(v)===i).join('')+'</table></div>';if(tab==='vehicles')tabContent.innerHTML='<div class="panel"><h3>Veículos</h3><div class="form"><div><label>PLACA *</label><input id="vPlate"></div><div><label>TIPO</label><select id="vType"><option>Caminhão</option><option>Carreta</option><option>Bitrem</option><option>Rodotrem</option><option>Utilitário</option><option>Van</option><option>Outro</option></select></div></div><div class="actions2"><button class="btn primary" onclick="addVehicle()">CADASTRAR</button></div></div><div class="panel"><table><tr><th>Placa</th><th>Tipo</th><th>Motorista mais recente</th></tr>'+companyData('vehicles').map(x=>`<tr><td><b>${x.plate}</b></td><td>${x.type||'-'}</td><td>${x.driver||'-'}</td></tr>`).join('')+'</table></div>';if(tab==='drivers')tabContent.innerHTML='<div class="panel"><h3>Motoristas</h3><div class="form"><div><label>NOME COMPLETO *</label><input id="dName"></div><div><label>TELEFONE</label><input id="dPhone"></div></div><div class="actions2"><button class="btn primary" onclick="addDriver()">CADASTRAR</button></div></div><div class="panel"><table><tr><th>Nome</th><th>Telefone</th></tr>'+companyData('drivers').map(x=>`<tr><td>${x.name}</td><td>${x.phone||'-'}</td></tr>`).join('')+'</table></div>'}
+function showTab(t,b){renderCadastros(t)}function addCompany(){const n=cName.value.trim();if(!n)return toast('Informe o nome.');companyData('ocs').push({num:'',type:cType.value,company:n,op:'',product:'',volume:'',dest:'',date:today(),status:'AGUARDANDO'});addAudit('CADASTRO EMPRESA',n);save();toast('Cliente/Fornecedor cadastrado');renderCadastros('companies')}function addVehicle(){const p=vPlate.value.trim().toUpperCase();if(!p)return toast('Informe a placa.');if(companyData('vehicles').some(x=>x.plate===p))return toast('Placa já cadastrada.');companyData('vehicles').push({plate:p,type:vType.value});addAudit('CADASTRO VEÍCULO',p);save();toast('Veículo cadastrado');renderCadastros('vehicles')}function addDriver(){const n=dName.value.trim();if(!n)return toast('Informe o nome.');companyData('drivers').push({name:n,phone:dPhone.value});addAudit('CADASTRO MOTORISTA',n);save();toast('Motorista cadastrado');renderCadastros('drivers')}
+function parseBRDate(v){const m=(v||'').trim().match(/^(\d{2})\/(\d{2})\/(\d{4})$/);return m?m[3]+'-'+m[2]+'-'+m[1]:''}
+function renderHistory(){if(!session)return;const m=companyData('moves').slice().sort((a,b)=>b.entry.localeCompare(a.entry));const q=(document.getElementById('histBusca')?.value||'').trim().toUpperCase();const st=document.getElementById('histStatus')?.value||'';const de=parseBRDate(document.getElementById('histDe')?.value);const ate=parseBRDate(document.getElementById('histAte')?.value);const f=m.filter(x=>{const text=((x.plate||'')+' '+(x.oc||'')+' '+(x.driver||'')).toUpperCase();const d=(x.entry||'').slice(0,10);return (!q||text.includes(q))&&(!st||(st==='DENTRO'&&!x.exit)||(st==='ENCERRADA'&&x.exit))&&(!de||d>=de)&&(!ate||d<=ate)});const hs=document.getElementById('historySummary');if(hs)hs.textContent=f.length+' movimentação(ões) encontrada(s).';const ht=document.getElementById('historyTable');if(!ht)return;if(!f.length){ht.innerHTML='<div class="mini">Nenhuma movimentação encontrada com os filtros informados.</div>';return}ht.innerHTML='<div style="overflow:auto"><table><thead><tr><th>Data</th><th>OC</th><th>Placa</th><th>Motorista</th><th>Entrada</th><th>Saída</th><th>Permanência</th><th>Status</th></tr></thead><tbody>'+f.map(x=>`<tr><td>${fmt(x.entry).slice(0,10)}</td><td>${x.oc||'SEM OC'}</td><td><b>${x.plate}</b></td><td>${x.driver||'—'}</td><td>${fmt(x.entry)}</td><td>${x.exit?fmt(x.exit):'—'}</td><td>${x.exit?duration(x.entry,x.exit):duration(x.entry)}</td><td>${x.exit?'<span class="badge ok">⚪ ENCERRADA</span>':'<span class="badge info">🔵 NA BASE</span>'}</td></tr>`).join('')+'</tbody></table></div>'}
+function renderReports(){if(!session)return;const m=companyData('moves').slice().sort((a,b)=>b.entry.localeCompare(a.entry));const q=(document.getElementById('repBusca')?.value||'').trim().toUpperCase();const st=document.getElementById('repStatus')?.value||'';const de=parseBRDate(document.getElementById('repDe')?.value);const ate=parseBRDate(document.getElementById('repAte')?.value);const f=m.filter(x=>{const text=((x.plate||'')+' '+(x.oc||'')+' '+(x.driver||'')).toUpperCase();const d=(x.entry||'').slice(0,10);return (!q||text.includes(q))&&(!st||(st==='DENTRO'&&!x.exit)||(st==='ENCERRADA'&&x.exit))&&(!de||d>=de)&&(!ate||d<=ate)});rTotal.textContent=f.length;rEntries.textContent=f.length;rExits.textContent=f.filter(x=>x.exit).length;rInside.textContent=f.filter(x=>!x.exit).length;const rs=document.getElementById('reportSummary');if(rs)rs.textContent=f.length+' movimentação(ões) encontrada(s) com os filtros informados.';reportTable.innerHTML=f.length?'<div style="overflow:auto"><table><thead><tr><th>Data</th><th>OC</th><th>Placa</th><th>Motorista</th><th>Entrada</th><th>Saída</th><th>Permanência</th><th>Status</th></tr></thead><tbody>'+f.map(x=>`<tr><td>${fmt(x.entry).slice(0,10)}</td><td>${x.oc||'SEM OC'}</td><td><b>${x.plate}</b></td><td>${x.driver||'—'}</td><td>${fmt(x.entry)}</td><td>${x.exit?fmt(x.exit):'—'}</td><td>${x.exit?duration(x.entry,x.exit):duration(x.entry)}</td><td>${x.exit?'<span class="badge ok">⚪ ENCERRADA</span>':'<span class="badge info">🔵 NA BASE</span>'}</td></tr>`).join('')+'</tbody></table></div>':'<div class="mini">Nenhuma movimentação encontrada com os filtros informados.</div>'}
+function getReportFiltered(){const m=companyData('moves').slice().sort((a,b)=>b.entry.localeCompare(a.entry));const q=(document.getElementById('repBusca')?.value||'').trim().toUpperCase();const st=document.getElementById('repStatus')?.value||'';const de=parseBRDate(document.getElementById('repDe')?.value);const ate=parseBRDate(document.getElementById('repAte')?.value);return m.filter(x=>{const text=((x.plate||'')+' '+(x.oc||'')+' '+(x.driver||'')).toUpperCase();const d=(x.entry||'').slice(0,10);return (!q||text.includes(q))&&(!st||(st==='DENTRO'&&!x.exit)||(st==='ENCERRADA'&&x.exit))&&(!de||d>=de)&&(!ate||d<=ate)})}function exportXLSX(){const f=getReportFiltered();const rows=f.map(x=>({'Data':x.entry.slice(0,10),'OC':x.oc||'SEM OC','Placa':x.plate||'','Motorista':x.driver||'','Entrada':fmt(x.entry),'Saída':x.exit?fmt(x.exit):'','Permanência':x.exit?duration(x.entry,x.exit):duration(x.entry),'Status':x.exit?'ENCERRADA':'NA BASE'}));const ws=XLSX.utils.json_to_sheet(rows);ws['!cols']=[{wch:13},{wch:14},{wch:12},{wch:24},{wch:20},{wch:20},{wch:16},{wch:14}];const wb=XLSX.utils.book_new();XLSX.utils.book_append_sheet(wb,ws,'Movimentações');XLSX.writeFile(wb,'relatorio_movimentacoes.xlsx')}function exportCSV(){const m=companyData('moves').slice().sort((a,b)=>b.entry.localeCompare(a.entry));const q=(document.getElementById('repBusca')?.value||'').trim().toUpperCase();const st=document.getElementById('repStatus')?.value||'';const de=parseBRDate(document.getElementById('repDe')?.value);const ate=parseBRDate(document.getElementById('repAte')?.value);const f=m.filter(x=>{const text=((x.plate||'')+' '+(x.oc||'')+' '+(x.driver||'')).toUpperCase();const d=(x.entry||'').slice(0,10);return (!q||text.includes(q))&&(!st||(st==='DENTRO'&&!x.exit)||(st==='ENCERRADA'&&x.exit))&&(!de||d>=de)&&(!ate||d<=ate)});const rows=[['Data','OC','Placa','Motorista','Entrada','Saída','Permanência','Status'],...f.map(x=>[x.entry.slice(0,10),x.oc||'SEM OC',x.plate,x.driver,fmt(x.entry),x.exit?fmt(x.exit):'',x.exit?duration(x.entry,x.exit):duration(x.entry),x.exit?'ENCERRADA':'NA BASE'])];const csv='\ufeff'+rows.map(r=>r.map(v=>'"'+String(v??'').replaceAll('"','""')+'"').join(';')).join('\n');const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([csv],{type:'text/csv;charset=utf-8'}));a.download='relatorio_movimentacoes.csv';a.click();URL.revokeObjectURL(a.href)}
+function abrirCriacaoUsuario(){
+  if(!session||session.role!=='ADMINISTRADOR'){toast('Somente o Administrador pode criar usuários.');return}
+  document.getElementById('userCreatePanel').classList.remove('hidden');
+  document.getElementById('uCreateUsername').value='';
+  document.getElementById('uCreateName').value='';
+  document.getElementById('uCreateEmail').value='';
+  document.getElementById('uCreatePhone').value='';
+  document.getElementById('uCreateProfile').value='PORTARIA';
+  document.getElementById('uCreatePassword').value='';
+  document.getElementById('uCreatePassword2').value='';
+  document.getElementById('uCreateMsg').textContent='';
+  document.getElementById('userCreatePanel').scrollIntoView({behavior:'smooth',block:'start'});
+}
+function fecharCriacaoUsuario(){document.getElementById('userCreatePanel').classList.add('hidden')}
+async function criarUsuarioSecundario(){
+  if(!session||session.role!=='ADMINISTRADOR')return;
+  const username=document.getElementById('uCreateUsername').value.trim();
+  const nome=document.getElementById('uCreateName').value.trim();
+  const email=document.getElementById('uCreateEmail').value.trim();
+  const telefone=document.getElementById('uCreatePhone').value.trim();
+  const perfil=document.getElementById('uCreateProfile').value;
+  const p=document.getElementById('uCreatePassword').value;
+  const p2=document.getElementById('uCreatePassword2').value;
+  const msg=document.getElementById('uCreateMsg');
+  if(!username||!nome||!email||!perfil||!p){msg.textContent='Preencha os campos obrigatórios.';return}
+  if(!['PORTARIA','ADMINISTRATIVO'].includes(perfil)){msg.textContent='Perfil inválido.';return}
+  if(p.length<6){msg.textContent='A senha deve ter pelo menos 6 caracteres.';return}
+  if(p!==p2){msg.textContent='As senhas não conferem.';return}
+  msg.textContent='Criando usuário...';
+  try{
+    const {data:sd}=await sb.auth.getSession();
+    const token=sd.session?.access_token;
+    if(!token)throw Error('Sessão expirada. Faça login novamente.');
+    const r=await fetch(SUPABASE_URL+'/functions/v1/create-user-admin',{method:'POST',headers:{apikey:SUPABASE_KEY,Authorization:'Bearer '+token,'Content-Type':'application/json'},body:JSON.stringify({username,nome_completo:nome,email,telefone,perfil,password:p})});
+    const body=await r.json().catch(()=>({}));
+    if(!r.ok)throw Error(body.error||'Não foi possível criar o usuário.');
+    addAudit('CRIAÇÃO DE USUÁRIO',`${username} — ${perfil} — usuário criado pelo administrador`);
+    msg.textContent='Usuário criado com sucesso.';
+    toast('USUÁRIO CRIADO');
+    document.getElementById('uCreateUsername').value='';
+    document.getElementById('uCreateName').value='';
+    document.getElementById('uCreateEmail').value='';
+    document.getElementById('uCreatePhone').value='';
+    document.getElementById('uCreatePassword').value='';
+    document.getElementById('uCreatePassword2').value='';
+    await renderUsers();
+  }catch(e){console.error(e);msg.textContent='Não foi possível criar o usuário: '+(e.message||e)}
+}
+async function renderUsers(){
+  if(!session||session.role==='Portaria')return;
+  const el=document.getElementById('usersTable'); if(!el)return;
+  el.innerHTML='<div class="mini">Carregando usuários...</div>';
+  try{
+    const {data,error}=await sb.from('usuarios').select('id,empresa_id,nome_completo,username,email,perfil,telefone,ativo,auth_user_id').eq('empresa_id',session.empresaId).order('nome_completo');
+    if(error)throw error;
+    const rows=data||[];
+    el.innerHTML=rows.length?'<div style="overflow:auto"><table><thead><tr><th>Usuário</th><th>Nome</th><th>E-mail</th><th>Telefone</th><th>Perfil</th><th>Status</th><th>Ação</th></tr></thead><tbody>'+rows.map(u=>{
+      const admin=u.perfil==='ADMINISTRADOR';
+      return `<tr><td><b>${u.username||'—'}</b></td><td>${u.nome_completo||'—'}</td><td>${u.email||'—'}</td><td>${u.telefone||'—'}</td><td>${u.perfil==='ADMINISTRADOR'?'Administrador':(u.perfil==='PORTARIA'?'Portaria':'Administrativo')}</td><td>${u.ativo===false?'<span class="badge danger-b">Inativo</span>':'<span class="badge ok">Ativo</span>'}</td><td>${admin?'<span class="mini">Administrador protegido</span>':`<button class="btn light" type="button" onclick="abrirEdicaoUsuario('${u.id}')">✏️ Editar</button>`}</td></tr>`;
+    }).join('')+'</tbody></table></div>':'<div class="mini">Nenhum usuário encontrado nesta empresa.</div>';
+  }catch(e){console.error(e);el.innerHTML='<div class="error">Não foi possível carregar os usuários: '+(e.message||e)+'</div>'}
+}
+let usuarioEditando=null;
+async function abrirEdicaoUsuario(id){
+  try{
+    const {data,error}=await sb.from('usuarios').select('id,empresa_id,nome_completo,username,email,perfil,telefone,ativo,auth_user_id').eq('id',id).eq('empresa_id',session.empresaId).maybeSingle();
+    if(error)throw error;
+    if(!data){toast('Usuário não encontrado nesta empresa.');return}
+    if(data.perfil==='ADMINISTRADOR'){toast('O usuário Administrador é protegido.');return}
+    usuarioEditando=data;
+    uEditUsername.value=data.username||''; uEditCompany.value=companies[session.company]?.name||session.company; uEditName.value=data.nome_completo||''; uEditEmail.value=data.email||''; uEditPhone.value=data.telefone||''; uEditProfile.value=data.perfil==='ADMINISTRATIVO'?'ADMINISTRATIVO':'PORTARIA'; uEditActive.value=data.ativo===false?'false':'true'; uNewPassword.value='';uNewPassword2.value='';uEditMsg.textContent='';uPassMsg.textContent=''; userEditPanel.classList.remove('hidden'); userEditPanel.scrollIntoView({behavior:'smooth',block:'start'});
+  }catch(e){console.error(e);toast('Erro ao abrir usuário: '+(e.message||e))}
+}
+function fecharEdicaoUsuario(){usuarioEditando=null;userEditPanel.classList.add('hidden')}
+async function salvarUsuarioSecundario(){
+  if(!usuarioEditando||!session)return;
+  const nome=uEditName.value.trim(), email=uEditEmail.value.trim(), telefone=uEditPhone.value.trim(), perfil=uEditProfile.value, ativo=uEditActive.value==='true';
+  if(!nome||!email){uEditMsg.textContent='Informe nome e e-mail.';return}
+  if(!['PORTARIA','ADMINISTRATIVO'].includes(perfil)){uEditMsg.textContent='Perfil inválido.';return}
+  uEditMsg.textContent='Salvando...';
+  try{
+    const {error}=await sb.from('usuarios').update({nome_completo:nome,email,telefone:telefone||null,perfil,ativo}).eq('id',usuarioEditando.id).eq('empresa_id',session.empresaId).neq('perfil','ADMINISTRADOR');
+    if(error)throw error;
+    addAudit('EDIÇÃO DE USUÁRIO',`${usuarioEditando.username||usuarioEditando.id} — perfil/status/dados atualizados`);
+    uEditMsg.textContent='Usuário atualizado com sucesso.';toast('USUÁRIO ATUALIZADO');await renderUsers();
+  }catch(e){console.error(e);uEditMsg.textContent='Não foi possível salvar: '+(e.message||e)}
+}
+async function redefinirSenhaUsuario(){
+  if(!usuarioEditando||!session)return;
+  const p=uNewPassword.value, p2=uNewPassword2.value;
+  if(p.length<6){uPassMsg.textContent='A senha deve ter pelo menos 6 caracteres.';return}
+  if(p!==p2){uPassMsg.textContent='As senhas não conferem.';return}
+  uPassMsg.textContent='Redefinindo senha...';
+  try{
+    const {data:sd}=await sb.auth.getSession(); const token=sd.session?.access_token; if(!token)throw Error('Sessão expirada. Faça login novamente.');
+    const r=await fetch(SUPABASE_URL+'/functions/v1/reset-user-password',{method:'POST',headers:{apikey:SUPABASE_KEY,Authorization:'Bearer '+token,'Content-Type':'application/json'},body:JSON.stringify({user_id:usuarioEditando.id,new_password:p})});
+    const body=await r.json().catch(()=>({})); if(!r.ok)throw Error(body.error||'Não foi possível redefinir a senha.');
+    addAudit('REDEFINIÇÃO DE SENHA',`${usuarioEditando.username||usuarioEditando.id} — senha redefinida pelo administrador`);
+    uNewPassword.value='';uNewPassword2.value='';uPassMsg.textContent='Senha redefinida com sucesso.';toast('SENHA REDEFINIDA');
+  }catch(e){console.error(e);uPassMsg.textContent='Não foi possível redefinir a senha: '+(e.message||e)}
+}
+function addAudit(action,detail){if(!session)return;companyData('audit').unshift({at:new Date().toISOString(),user:session.user,action,detail}) ;save()}
+function renderAudit(){if(!session||session.role==='Portaria')return;auditTable.innerHTML='<table><tr><th>Data/Hora</th><th>Usuário</th><th>Ação</th><th>Detalhe</th></tr>'+companyData('audit').slice(0,100).map(x=>`<tr><td>${fmt(x.at)}</td><td>${x.user}</td><td>${x.action}</td><td>${x.detail}</td></tr>`).join('')+'</table>'}
+function status(s){return s==='AGUARDANDO'?'<span class="badge warn">🟡 AGUARDANDO</span>':(s==='EM_OPERACAO'||s==='EM OPERAÇÃO')?'<span class="badge info">🔵 EM OPERAÇÃO</span>':s==='ENCERRADA'?'<span class="badge">⚪ ENCERRADA</span>':'<span class="badge danger-b">🔴 CANCELADA</span>'}function kv(k,v){return `<div class="kv"><b>${k}</b>${v}</div>`}function fmt(s){return new Date(s).toLocaleString('pt-BR',{dateStyle:'short',timeStyle:'short'})}function duration(a,b){let ms=(b?new Date(b):new Date())-new Date(a),min=Math.max(0,Math.floor(ms/60000));return Math.floor(min/60)+'h '+(min%60)+'min'}function toast(t){const x=document.getElementById('toast');x.textContent=t;x.style.display='block';setTimeout(()=>x.style.display='none',2800)}
+const _ocDate=document.getElementById('newOcDate'); if(_ocDate) _ocDate.value=today();
+const _loginBtn=document.getElementById('loginBtn'); if(_loginBtn) _loginBtn.addEventListener('click',login);
+document.getElementById('loginPass').addEventListener('keydown',e=>{if(e.key==='Enter')login()});
+// Mantém a sessão do Supabase ao recarregar a página; não fazer signOut automaticamente.
+</script>
+<script>
+// V6 — Ordem de Carregamento conectada ao Supabase
+(function(){
+  const OC_URL='https://sybsplfizklerwoxulca.supabase.co';
+  const OC_KEY='sb_publishable_FLT3evY8UiqK4_ZxsH-Zfw_iWKhfttP';
+  const $=id=>document.getElementById(id);
+  const msg=(t,ok=false)=>{const e=$('ocMsg'); if(e){e.textContent=t;e.style.color=ok?'#176b3a':'#a22';}};
+  async function ocHeaders(){
+    const {data}=await sb.auth.getSession();
+    const token=data.session?.access_token;
+    if(!token) throw Error('Sessão expirada. Faça login novamente.');
+    return {apikey:OC_KEY,Authorization:'Bearer '+token,'Content-Type':'application/json'};
+  }
+  async function ocEmpresa(){
+    if(!session?.empresaId) throw Error('Empresa não identificada. Faça login novamente.');
+    return session.empresaId;
+  }
+  async function ocCarregarParceiros(){
+    const sel=$('ocParceiro'); if(!sel) return;
+    sel.innerHTML='<option value="">Carregando...</option>';
+    try{
+      const h=await ocHeaders();
+      const r=await fetch(OC_URL+'/rest/v1/clientes_fornecedores?select=id,nome_razao_social,tipo&ativo=eq.true&order=nome_razao_social',{headers:h});
+      if(!r.ok) throw Error(await r.text());
+      const a=await r.json();
+      sel.innerHTML='<option value="">Selecione</option>'+a.map(x=>`<option value="${x.id}" data-tipo="${x.tipo}">${x.nome_razao_social} — ${x.tipo==='CLIENTE'?'Cliente':'Fornecedor'}</option>`).join('');
+      if(!a.length) sel.innerHTML='<option value="">Nenhum cliente/fornecedor cadastrado</option>';
+      ocFiltrarTipo();
+    }catch(e){sel.innerHTML='<option value="">Erro ao carregar</option>';msg('Não foi possível carregar clientes/fornecedores: '+e.message);}
+  }
+  function ocFiltrarTipo(){
+    const tipo=$('ocTipo')?.value, sel=$('ocParceiro'); if(!sel) return;
+    const current=sel.value;
+    [...sel.options].forEach(o=>{ if(!o.value) {o.hidden=false;return;} o.hidden=!!tipo && o.dataset.tipo!==tipo; });
+    if(sel.selectedOptions[0]?.hidden) sel.value='';
+  }
+  async function ocAtualizar(){
+    const box=$('ocTable'); if(!box) return;
+    try{
+      const h=await ocHeaders();
+      const r=await fetch(OC_URL+'/rest/v1/ordens_carregamento?select=id,numero_oc,tipo_empresa,cliente_fornecedor_id,tipo_operacao,produto_material,quantidade,unidade,unidade_outro,destino_setor,data_operacao,data_prevista_entrada,observacoes,status&order=data_operacao.desc,numero_oc.desc',{headers:h});
+      if(!r.ok) throw Error(await r.text());
+      const ocs=await r.json();
+      const cr=await fetch(OC_URL+'/rest/v1/clientes_fornecedores?select=id,nome_razao_social,tipo&ativo=eq.true&order=nome_razao_social',{headers:h});
+      const parceiros=cr.ok?await cr.json():[];
+      const nomes=Object.fromEntries(parceiros.map(x=>[x.id,x.nome_razao_social]));
+      const mr=await fetch(OC_URL+'/rest/v1/movimentacoes?select=id,oc_id,entrada_em,saida_em,veiculos(placa),motoristas(nome_completo)&order=entrada_em.desc',{headers:h});
+      const movs=mr.ok?await mr.json():[];
+      const movPorOc={};
+      movs.forEach(m=>{(movPorOc[m.oc_id] ||= []).push(m);});
+      const q=($('ocBusca')?.value||'').trim().toLowerCase();
+      const sf=$('ocStatusFiltro')?.value||'';
+      const lista=ocs.filter(x=>(!sf||x.status===sf) && (!q || [x.numero_oc,x.status,x.tipo_operacao,x.produto_material,x.destino_setor,nomes[x.cliente_fornecedor_id]].some(v=>String(v||'').toLowerCase().includes(q))));
+      if(!lista.length){box.innerHTML='<div class="mini">Nenhuma OC encontrada.</div>';return;}
+      const brdt=v=>v?v.split('T')[0].split('-').reverse().join('/')+(v.includes('T')?' '+v.split('T')[1].slice(0,5):''):'—';
+      const vol=x=>((x.quantidade??'—')+' '+(x.unidade==='Outro'?(x.unidade_outro||'Outro'):x.unidade||'')).trim();
+      const esc=v=>String(v??'—').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+      box.innerHTML='<div style="overflow:auto"><table><thead><tr><th>OC</th><th>Cliente / Fornecedor</th><th>Produto / Material</th><th>Volume</th><th>Destino / Setor</th><th>Veículo</th><th>Motorista</th><th>Entrada</th><th>Saída</th><th>Status</th><th></th></tr></thead><tbody>'+lista.map(x=>{const ms=movPorOc[x.id]||[]; const m=ms[0]; return `<tr><td><b>${esc(x.numero_oc)}</b></td><td>${esc(nomes[x.cliente_fornecedor_id])}</td><td>${esc(x.produto_material)}</td><td>${esc(vol(x))}</td><td>${esc(x.destino_setor)}</td><td>${esc(m?.veiculos?.placa||'—')}</td><td>${esc(m?.motoristas?.nome_completo||'—')}</td><td>${esc(brdt(m?.entrada_em))}</td><td>${esc(brdt(m?.saida_em))}</td><td>${status(x.status)}${ms.length>1?` <span class="mini">(${ms.length} movimentos)</span>`:''}</td><td><button class="btn light" onclick="ocDetalhes('${x.id}')">Detalhes</button></td></tr>`;}).join('')+'</tbody></table></div>';
+    }catch(e){box.innerHTML='';msg('Não foi possível consultar as OCs: '+e.message);}
+  }
+  function dataBRparaISO(v){
+    const s=(v||'').trim();
+    if(!s) return null;
+    const m=s.match(/^(\d{2})\/(\d{2})\/(\d{4})$/);
+    if(!m) throw Error('Data inválida. Use o formato DD/MM/AAAA.');
+    const d=Number(m[1]), mo=Number(m[2]), y=Number(m[3]);
+    const dt=new Date(Date.UTC(y,mo-1,d));
+    if(dt.getUTCFullYear()!==y || dt.getUTCMonth()!==mo-1 || dt.getUTCDate()!==d) throw Error('Data inválida. Use uma data existente no formato DD/MM/AAAA.');
+    return `${y}-${String(mo).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
+  }
+  function hojeBR(){
+    const d=new Date();
+    return `${String(d.getDate()).padStart(2,'0')}/${String(d.getMonth()+1).padStart(2,'0')}/${d.getFullYear()}`;
+  }
+  function mascaraDataBR(el){
+    if(!el) return;
+    el.addEventListener('input',()=>{
+      let v=el.value.replace(/\D/g,'').slice(0,8);
+      if(v.length>4) v=v.slice(0,2)+'/'+v.slice(2,4)+'/'+v.slice(4);
+      else if(v.length>2) v=v.slice(0,2)+'/'+v.slice(2);
+      el.value=v;
+    });
+  }
+  async function ocSalvar(){
+    try{
+      const num=$('ocNumero').value.trim(), tipo=$('ocTipo').value, parceiro=$('ocParceiro').value, op=$('ocOperacao').value, produto=$('ocProduto').value.trim(), quantidadeRaw=$('ocQuantidade').value, unidade=$('ocUnidade').value, unidadeOutro=$('ocUnidadeOutro').value.trim(), destino=$('ocDestino').value.trim();
+      const quantidade=quantidadeRaw!==''?Number(quantidadeRaw):NaN;
+      if(!num||!tipo||!parceiro||!op||!produto||!destino||!unidade||!Number.isFinite(quantidade)||quantidade<=0||(unidade==='Outro'&&!unidadeOutro)) return msg('Preencha os campos obrigatórios: número da OC, tipo, cliente/fornecedor, operação, produto/material, quantidade, unidade e destino/setor.');
+      const empresa_id=await ocEmpresa(), h=await ocHeaders();
+      const dup=await fetch(OC_URL+'/rest/v1/ordens_carregamento?select=id&numero_oc=eq.'+encodeURIComponent(num)+'&limit=1',{headers:h});
+      if(!dup.ok) throw Error(await dup.text());
+      if((await dup.json()).length) return msg('Este número de OC já existe nesta empresa.');
+      const body={empresa_id,numero_oc:num,tipo_empresa:tipo,cliente_fornecedor_id:parceiro,tipo_operacao:op,produto_material:produto,quantidade,unidade,unidade_outro:unidade==='Outro'?unidadeOutro:null,destino_setor:destino,data_operacao:dataBRparaISO($('ocData').value)||(()=>{throw Error('Informe a data da operação no formato DD/MM/AAAA.')})(),data_prevista_entrada:dataBRparaISO($('ocDataPrevista').value),observacoes:$('ocObservacoes').value.trim()||null,status:'AGUARDANDO'};
+      const r=await fetch(OC_URL+'/rest/v1/ordens_carregamento',{method:'POST',headers:{...h,Prefer:'return=minimal'},body:JSON.stringify(body)});
+      if(!r.ok) throw Error(await r.text());
+      msg('Ordem de Carregamento salva com sucesso.',true);
+      ocLimpar();
+      await ocAtualizar();
+    }catch(e){msg(e.message);}
+  }
+  function ocLimpar(){
+    ['ocNumero','ocProduto','ocQuantidade','ocDestino','ocDataPrevista','ocUnidadeOutro','ocObservacoes'].forEach(id=>{const e=$(id);if(e)e.value='';});
+    if($('ocTipo')) $('ocTipo').value='';
+    if($('ocParceiro')) $('ocParceiro').value='';
+    if($('ocOperacao')) $('ocOperacao').value='';
+    if($('ocUnidade')) $('ocUnidade').value='';
+    if($('ocOutroWrap')) $('ocOutroWrap').style.display='none';
+    if($('ocData')) $('ocData').value=hojeBR();
+  }
+
+  async function ocDetalhes(id){
+    try{
+      const h=await ocHeaders();
+      const r=await fetch(OC_URL+'/rest/v1/ordens_carregamento?select=id,numero_oc,tipo_empresa,cliente_fornecedor_id,tipo_operacao,produto_material,quantidade,unidade,unidade_outro,destino_setor,data_operacao,data_prevista_entrada,observacoes,status&id=eq.'+encodeURIComponent(id)+'&limit=1',{headers:h});
+      if(!r.ok) throw Error(await r.text());
+      const a=await r.json(); if(!a.length) return msg('OC não encontrada.');
+      const x=a[0];
+      const cr=await fetch(OC_URL+'/rest/v1/clientes_fornecedores?select=nome_razao_social,tipo&id=eq.'+encodeURIComponent(x.cliente_fornecedor_id),{headers:h});
+      const parceiro=cr.ok?(await cr.json())[0]:null;
+      const mr=await fetch(OC_URL+'/rest/v1/movimentacoes?select=id,entrada_em,saida_em,observacao_entrada,observacao_saida,veiculos(placa),motoristas(nome_completo)&oc_id=eq.'+encodeURIComponent(id)+'&order=entrada_em.desc',{headers:h});
+      const movs=mr.ok?await mr.json():[];
+      const unidade=x.unidade==='Outro'?(x.unidade_outro||'Outro'):x.unidade;
+      const brdt=v=>v?v.split('T')[0].split('-').reverse().join('/')+(v.includes('T')?' '+v.split('T')[1].slice(0,5):''):'—';
+      msg('OC '+x.numero_oc+' • '+(parceiro?.nome_razao_social||'—')+' • '+(x.tipo_operacao||'—')+' • '+(x.data_operacao?x.data_operacao.split('-').reverse().join('/'):'—')+' • '+(x.status||'—'),true);
+      let texto='ORDEM DE CARREGAMENTO\n\nOC: '+x.numero_oc+'\nTipo: '+(x.tipo_empresa||'—')+'\nCliente/Fornecedor: '+(parceiro?.nome_razao_social||'—')+'\nOperação: '+(x.tipo_operacao||'—')+'\nProduto/Material: '+(x.produto_material||'—')+'\nVolume: '+(x.quantidade??'—')+' '+(unidade||'')+'\nDestino/Setor: '+(x.destino_setor||'—')+'\nData da operação: '+(x.data_operacao?x.data_operacao.split('-').reverse().join('/'):'—')+'\nEntrada prevista: '+(x.data_prevista_entrada?x.data_prevista_entrada.split('-').reverse().join('/'):'—')+'\nStatus: '+(x.status||'—')+'\n\nMOVIMENTAÇÕES: '+movs.length;
+      movs.forEach((m,i)=>{texto+=`\n\n${i+1}) Placa: ${m.veiculos?.placa||'—'} | Motorista: ${m.motoristas?.nome_completo||'—'}\nEntrada: ${brdt(m.entrada_em)} | Saída: ${brdt(m.saida_em)}`;});
+      texto+='\n\nObservações: '+(x.observacoes||'—');
+      alert(texto);
+    }catch(e){msg('Não foi possível abrir os detalhes: '+e.message);}
+  }
+  window.ocAbrir=async function(){
+    if(!session) return;
+    if($('ocData')&&!$('ocData').value) $('ocData').value=hojeBR();
+    await ocCarregarParceiros();
+    await ocAtualizar();
+  };
+  window.ocAtualizar=ocAtualizar; window.ocSalvar=ocSalvar; window.ocLimpar=ocLimpar; window.renderOCs=ocAtualizar; window.ocDetalhes=ocDetalhes;
+  document.addEventListener('DOMContentLoaded',()=>{
+    $('ocTipo')?.addEventListener('change',ocFiltrarTipo);
+    $('ocUnidade')?.addEventListener('change',e=>{if($('ocOutroWrap'))$('ocOutroWrap').style.display=e.target.value==='Outro'?'block':'none';});
+    mascaraDataBR($('ocData')); mascaraDataBR($('ocDataPrevista'));
+  });
+})();
+</script>
+<style>
+#veiculosModule .vconsult{margin:18px 0;padding:16px;border:1px solid #dbe7f1;border-radius:12px;background:#f8fbfe}
+#veiculosModule .vconsult h3{margin:0 0 12px;color:#123a63}
+#veiculosModule .vsearchrow{display:flex;gap:10px;flex-wrap:wrap}
+#veiculosModule .vsearchrow input{flex:1;min-width:220px}
+#veiculosModule .vdetail{margin-top:12px}
+#veiculosModule .vdetail .detailbox{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
+#veiculosModule .vdetail .item{background:#fff;border:1px solid #e1eaf2;border-radius:9px;padding:10px}
+@media(max-width:700px){#veiculosModule .vdetail .detailbox{grid-template-columns:1fr}}
+#veiculosModule{display:none;max-width:1100px;margin:24px auto;padding:20px;background:#fff;border-radius:16px;box-shadow:0 8px 30px rgba(0,0,0,.08)}
+#veiculosModule h2{margin:0 0 16px;color:#123a63}.vgrid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+#veiculosModule label{font-weight:600;font-size:14px;color:#345}.vgrid input,.vgrid select,.vgrid textarea{width:100%;padding:11px;border:1px solid #ccd6e0;border-radius:9px;box-sizing:border-box}
+#veiculosModule textarea{min-height:80px}.vactions{margin-top:14px;display:flex;gap:10px;flex-wrap:wrap}
+#veiculosModule button{border:0;border-radius:9px;padding:11px 16px;cursor:pointer;font-weight:700}
+#vSalvar{background:#1261a0;color:#fff}.vsecondary{background:#eaf2f8;color:#123a63}
+#vMsg{margin-top:12px;font-weight:600}.vtable{width:100%;border-collapse:collapse;margin-top:18px}.vtable th,.vtable td{padding:9px;border-bottom:1px solid #e6ebf0;text-align:left}
+@media(max-width:700px){.vgrid{grid-template-columns:1fr}}
+</style>
+<section id="veiculosModule">
+  <h2>🚛 Cadastro de Veículos</h2>
+  <div class="vgrid">
+    <div><label>Placa *</label><input id="vPlaca" maxlength="8" placeholder="ABC1D23"></div>
+    <div><label>Tipo *</label>
+      <select id="vTipo">
+        <option value="">Selecione</option><option>CAMINHÃO</option><option>CARRETA</option><option>BITREM</option><option>RODOTREM</option><option>UTILITÁRIO</option><option>VAN</option><option>OUTRO</option>
+      </select>
+    </div>
+    <div><label>Modelo</label><input id="vModelo" placeholder="Modelo do veículo"></div>
+    <div><label>Transportadora</label><input id="vTransportadora" placeholder="Opcional"></div>
+    <div style="grid-column:1/-1"><label>Observações</label><textarea id="vObs"></textarea></div>
+  </div>
+  <div class="vactions">
+    <button id="vSalvar">Salvar veículo</button>
+    <button class="vsecondary" id="vLimpar">Limpar</button>
+    <button class="vsecondary" id="vAtualizar">Atualizar lista</button>
+  </div>
+  <div id="vMsg"></div>
+  <div class="vconsult">
+    <h3>🔎 Consultar veículo</h3>
+    <div class="vsearchrow">
+      <input id="vBusca" placeholder="Digite a placa para consultar" autocomplete="off">
+      <button class="vsecondary" id="vConsultar">Consultar</button>
+    </div>
+    <div id="vDetalhe" class="vdetail"></div>
+  </div>
+  <table class="vtable"><thead><tr><th>Placa</th><th>Tipo</th><th>Modelo</th><th>Transportadora</th></tr></thead><tbody id="vRows"></tbody></table>
+</section>
+<script>
+(function(){
+  const SUPABASE_URL = "https://sybsplfizklerwoxulca.supabase.co";
+  const SUPABASE_KEY = "sb_publishable_FLT3evY8UiqK4_ZxsH-Zfw_iWKhfttP";
+  const mod = document.getElementById("veiculosModule");
+  if(!mod) return;
+  const $=id=>document.getElementById(id);
+  function msg(t,ok=false){$("vMsg").textContent=t;$("vMsg").style.color=ok?"#176b3a":"#a22";}
+  async function headers(){const {data}=await sb.auth.getSession(); return {"apikey":SUPABASE_KEY,"Authorization":"Bearer "+(data.session?.access_token||""),"Content-Type":"application/json"};}
+  async function getEmpresa(){
+    const {data:sd}=await sb.auth.getSession(); const token=sd.session?.access_token; if(!token) throw Error("Faça login novamente.");
+    const r=await fetch(SUPABASE_URL+"/rest/v1/usuarios?select=empresa_id&auth_user_id=eq."+encodeURIComponent(sd.session.user.id),{headers:await headers()});
+    if(!r.ok) throw Error("Não foi possível identificar a empresa.");
+    const a=await r.json(); if(!a.length) throw Error("Usuário não vinculado a uma empresa.");
+    return a[0].empresa_id;
+  }
+  async function listar(){
+    try{
+      const h=await headers(), r=await fetch(SUPABASE_URL+"/rest/v1/veiculos?select=placa,tipo,modelo,transportadora_id,observacoes&order=placa",{headers:h});
+      if(!r.ok) throw Error(await r.text());
+      const a=await r.json();
+      const cr=await fetch(SUPABASE_URL+"/rest/v1/clientes_fornecedores?select=id,nome_razao_social&order=nome_razao_social",{headers:h});
+      const c=cr.ok?await cr.json():[];
+      const nomes=Object.fromEntries(c.map(x=>[x.id,x.nome_razao_social]));
+      $("vRows").innerHTML=a.map(v=>`<tr><td>${v.placa||""}</td><td>${v.tipo||""}</td><td>${v.modelo||""}</td><td>${v.transportadora_id?(nomes[v.transportadora_id]||""): ""}</td></tr>`).join("");
+    }catch(e){msg(e.message)}
+  }
+  async function salvar(){
+    try{
+      const placa=$("vPlaca").value.trim().toUpperCase(), tipo=$("vTipo").value;
+      if(!placa||!tipo) return msg("Informe a placa e o tipo.");
+      const empresa_id=await getEmpresa();
+      let transportadora_id=null;
+      const trNome=$("vTransportadora").value.trim();
+      if(trNome){
+        const q=await fetch(SUPABASE_URL+"/rest/v1/clientes_fornecedores?select=id&empresa_id=eq."+encodeURIComponent(empresa_id)+"&nome_razao_social=eq."+encodeURIComponent(trNome)+"&limit=1",{headers:await headers()});
+        if(!q.ok) throw Error(await q.text());
+        const qa=await q.json();
+        if(qa.length) transportadora_id=qa[0].id;
+        else{
+          const cr=await fetch(SUPABASE_URL+"/rest/v1/clientes_fornecedores",{method:"POST",headers:{...(await headers()),"Prefer":"return=representation"},body:JSON.stringify({empresa_id,tipo:"FORNECEDOR",nome_razao_social:trNome})});
+          if(!cr.ok) throw Error(await cr.text());
+          const ca=await cr.json(); transportadora_id=ca[0]?.id||null;
+        }
+      }
+      const body={empresa_id,placa,tipo,modelo:$("vModelo").value.trim()||null,transportadora_id,observacoes:$("vObs").value.trim()||null};
+      const r=await fetch(SUPABASE_URL+"/rest/v1/veiculos",{method:"POST",headers:{...(await headers()),"Prefer":"return=minimal"},body:JSON.stringify(body)});
+      if(!r.ok) throw Error(await r.text());
+      msg("Veículo salvo com sucesso.",true); ["vPlaca","vModelo","vTransportadora","vObs"].forEach(id=>$(id).value="");$("vTipo").value="";listar();
+    }catch(e){msg(e.message)}
+  }
+  async function consultarVeiculo(){
+    const p=($("vBusca").value||"").trim().toUpperCase();
+    if(!p){$("vDetalhe").innerHTML='<div class="mini">Digite uma placa para consultar.</div>';return}
+    try{
+      const h=await headers();
+      const vr=await fetch(SUPABASE_URL+"/rest/v1/veiculos?select=id,placa,tipo,modelo,transportadora_id,observacoes&placa=eq."+encodeURIComponent(p)+"&limit=1",{headers:h});
+      if(!vr.ok) throw Error(await vr.text());
+      const va=await vr.json();
+      if(!va.length){$("vDetalhe").innerHTML='<div class="mini">Placa não encontrada nesta empresa.</div>';return}
+      const v=va[0];
+      const mr=await fetch(SUPABASE_URL+"/rest/v1/movimentacoes?select=id,oc_id,entrada_em,saida_em,observacao_entrada,observacao_saida,motoristas(nome_completo),ordens_carregamento(numero_oc,tipo_empresa,tipo_operacao,produto_material,quantidade,unidade,unidade_outro,destino_setor,status,clientes_fornecedores(nome_razao_social,tipo))&veiculo_id=eq."+encodeURIComponent(v.id)+"&order=entrada_em.desc",{headers:h});
+      const ma=mr.ok?await mr.json():[];
+      const atual=ma.find(m=>!m.saida_em);
+      const cr= v.transportadora_id ? await fetch(SUPABASE_URL+"/rest/v1/clientes_fornecedores?select=nome_razao_social&id=eq."+encodeURIComponent(v.transportadora_id)+"&limit=1",{headers:h}) : null;
+      const ca=cr&&cr.ok?await cr.json():[];
+      const transp=ca[0]?.nome_razao_social||'—';
+      const status=atual?'🟢 NA BASE':'⚪ FORA';
+      const oc=atual?.ordens_carregamento;
+      const volume=oc?.quantidade!=null ? (oc.quantidade+' '+(oc.unidade==='Outro'?(oc.unidade_outro||''): (oc.unidade||''))).trim() : 'Não informado';
+      const cliente=oc?.clientes_fornecedores?.nome_razao_social||'Não informado — entrada sem OC';
+      const produto=oc?.produto_material||'Não informado';
+      let associacaoHtml='';
+      if(atual && !atual.oc_id && session.role!=='Portaria'){
+        associacaoHtml=`<div id="assocOcBox" style="margin-top:14px;padding:14px;border:1px solid #d8e5f0;border-radius:12px;background:#f8fbfe"><h3 style="margin:0 0 8px">Associar Ordem de Carregamento</h3><div class="mini" style="margin-bottom:10px">Esta entrada foi registrada sem OC. Você pode associar uma OC AGUARDANDO a esta movimentação.</div><div style="display:flex;gap:10px;flex-wrap:wrap;align-items:end"><div style="flex:1;min-width:240px"><label style="display:block;font-weight:700;font-size:13px;margin-bottom:5px">OC</label><select id="assocOcSelect" style="width:100%;padding:10px;border:1px solid #ccd9e5;border-radius:9px"><option value="">Carregando OCs...</option></select></div><button class="btn primary" type="button" onclick="associarOCAtual('${atual.id}','${p}')">ASSOCIAR OC</button></div><div id="assocOcMsg" class="mini" style="margin-top:8px"></div></div>`;
+        setTimeout(()=>carregarOCsParaAssociar(),0);
+      }
+      const hist=ma.length?'<div style="margin-top:16px"><h3 style="margin:0 0 8px">Histórico de movimentações</h3><div style="overflow:auto"><table><tr><th>Cliente / Fornecedor</th><th>Produto / Material</th><th>Volume</th><th>OC</th><th>Motorista</th><th>Entrada</th><th>Saída</th><th>Status</th></tr>'+ma.map(m=>{const o=m.ordens_carregamento;const vol=o?.quantidade!=null?(o.quantidade+' '+(o.unidade==='Outro'?(o.unidade_outro||''):(o.unidade||''))).trim():'Não informado';return '<tr><td>'+(o?.clientes_fornecedores?.nome_razao_social||'Não informado')+'</td><td>'+(o?.produto_material||'Não informado')+'</td><td>'+vol+'</td><td>'+(o?.numero_oc||'SEM OC')+'</td><td>'+(m.motoristas?.nome_completo||'—')+'</td><td>'+(m.entrada_em?fmt(m.entrada_em):'—')+'</td><td>'+(m.saida_em?fmt(m.saida_em):'—')+'</td><td>'+(m.saida_em?'ENCERRADA':'🟢 NA BASE')+'</td></tr>'}).join('')+'</table></div></div>':'<div class="mini" style="margin-top:14px">Nenhuma movimentação registrada.</div>';
+      $("vDetalhe").innerHTML='<div class="detailbox">'+
+        '<div class="item"><b>Placa</b><br>'+v.placa+'</div>'+ 
+        '<div class="item"><b>Status</b><br>'+status+'</div>'+ 
+        '<div class="item"><b>Tipo</b><br>'+(v.tipo||'—')+'</div>'+ 
+        '<div class="item"><b>Modelo</b><br>'+(v.modelo||'—')+'</div>'+ 
+        '<div class="item"><b>Transportadora</b><br>'+transp+'</div>'+ 
+        '<div class="item"><b>Motorista atual</b><br>'+(atual?.motoristas?.nome_completo||'—')+'</div>'+ 
+        '<div class="item"><b>OC atual</b><br>'+(oc?.numero_oc||'SEM OC')+'</div>'+ 
+        '<div class="item"><b>Cliente / Fornecedor</b><br>'+cliente+'</div>'+ 
+        '<div class="item"><b>Produto / Material</b><br>'+produto+'</div>'+ 
+        '<div class="item"><b>Volume</b><br>'+volume+'</div>'+ 
+        '<div class="item"><b>Operação</b><br>'+(oc?.tipo_operacao||'Entrada sem OC')+'</div>'+ 
+        '<div class="item"><b>Entrada atual</b><br>'+(atual?.entrada_em?fmt(atual.entrada_em):'—')+'</div>'+ 
+        '<div class="item"><b>Destino / Setor</b><br>'+(oc?.destino_setor||'—')+'</div>'+ 
+        '</div>'+associacaoHtml+(atual?'<div class="vactions" style="margin-top:12px"><button class="vsecondary" type="button" onclick="go(\'saida\')">↗️ Registrar Saída</button></div>':'')+hist;
+    }catch(e){console.error(e);$("vDetalhe").innerHTML='<div class="mini">Não foi possível consultar o veículo.</div>'}
+  }
+  async function carregarOCsParaAssociar(){
+    const sel=$("assocOcSelect");
+    if(!sel) return;
+    try{
+      const h=await headers();
+      const r=await fetch(SUPABASE_URL+"/rest/v1/ordens_carregamento?select=id,numero_oc,tipo_operacao,produto_material,quantidade,unidade,unidade_outro,destino_setor,status,clientes_fornecedores(nome_razao_social)&status=eq.AGUARDANDO&order=numero_oc",{headers:h});
+      if(!r.ok) throw Error(await r.text());
+      const a=await r.json();
+      sel.innerHTML='<option value="">Selecione uma OC</option>'+a.map(o=>{const vol=o.quantidade!=null?(o.quantidade+' '+(o.unidade==='Outro'?(o.unidade_outro||''):(o.unidade||''))).trim():'';return '<option value="'+o.id+'">'+o.numero_oc+' — '+(o.clientes_fornecedores?.nome_razao_social||'Sem cliente/fornecedor')+' — '+(o.produto_material||'Sem produto')+(vol?' — '+vol:'')+'</option>'}).join('');
+      if(!a.length) sel.innerHTML='<option value="">Nenhuma OC AGUARDANDO disponível</option>';
+    }catch(e){console.error(e);sel.innerHTML='<option value="">Erro ao carregar OCs</option>';}
+  }
+  window.associarOCAtual=async function(movId,plate){
+    const sel=$("assocOcSelect"), msgEl=$("assocOcMsg");
+    if(!sel||!sel.value){if(msgEl)msgEl.textContent='Selecione uma OC.';return;}
+    try{
+      if(session.role==='Portaria') throw Error('Somente usuários administrativos podem associar uma OC.');
+      const h=await headers();
+      const empresa_id=await getEmpresa();
+      const ocId=sel.value;
+      const ocR=await fetch(SUPABASE_URL+"/rest/v1/ordens_carregamento?select=id,numero_oc,status&id=eq."+encodeURIComponent(ocId)+"&empresa_id=eq."+encodeURIComponent(empresa_id)+"&limit=1",{headers:h});
+      if(!ocR.ok) throw Error(await ocR.text());
+      const ocs=await ocR.json();
+      if(!ocs.length) throw Error('OC não encontrada nesta empresa.');
+      if(ocs[0].status!=='AGUARDANDO') throw Error('A OC selecionada não está AGUARDANDO.');
+      const movR=await fetch(SUPABASE_URL+"/rest/v1/movimentacoes?select=id,oc_id,saida_em&id=eq."+encodeURIComponent(movId)+"&empresa_id=eq."+encodeURIComponent(empresa_id)+"&limit=1",{headers:h});
+      if(!movR.ok) throw Error(await movR.text());
+      const movs=await movR.json();
+      if(!movs.length) throw Error('Movimentação não encontrada.');
+      if(movs[0].saida_em) throw Error('Essa movimentação já foi encerrada.');
+      if(movs[0].oc_id) throw Error('Essa movimentação já possui uma OC.');
+      const up=await fetch(SUPABASE_URL+"/rest/v1/movimentacoes?id=eq."+encodeURIComponent(movId)+"&empresa_id=eq."+encodeURIComponent(empresa_id),{method:'PATCH',headers:{...h,'Prefer':'return=minimal'},body:JSON.stringify({oc_id:ocId})});
+      if(!up.ok) throw Error(await up.text());
+      const op=await fetch(SUPABASE_URL+"/rest/v1/ordens_carregamento?id=eq."+encodeURIComponent(ocId)+"&empresa_id=eq."+encodeURIComponent(empresa_id),{method:'PATCH',headers:{...h,'Prefer':'return=minimal'},body:JSON.stringify({status:'EM_OPERACAO'})});
+      if(!op.ok) throw Error(await op.text());
+      addAudit('ASSOCIAÇÃO DE OC','Placa '+plate+' • OC '+ocs[0].numero_oc+' • movimentação '+movId);
+      if(msgEl) msgEl.textContent='OC associada com sucesso.';
+      await refreshFromSupabase();
+      setTimeout(()=>consultarVeiculo(),150);
+    }catch(e){console.error(e);if(msgEl)msgEl.textContent='Não foi possível associar: '+(e.message||e);}
+  };
+  $("vConsultar").addEventListener("click",consultarVeiculo);
+  $("vBusca").addEventListener("keydown",e=>{if(e.key==='Enter')consultarVeiculo()});
+  $("vSalvar").addEventListener("click",salvar);$("vAtualizar").addEventListener("click",listar);
+  $("vLimpar").addEventListener("click",()=>{["vPlaca","vModelo","vTransportadora","vObs"].forEach(id=>$(id).value="");$("vTipo").value="";msg("")});
+  // Show when an existing navigation element contains "veículo"; otherwise provide a small floating access button.
+  const btn=document.createElement("button");btn.id="vAccess";btn.textContent="🚛 Veículos";btn.style.cssText="display:none!important";
+  btn.onclick=()=>{mod.style.display=mod.style.display==="none"?"block":"none";if(mod.style.display==="block")listar()};document.body.appendChild(btn);
+})();
+</script>
+
+<style>
+#motoristasModule{display:none;position:fixed;inset:0;background:#eef5fb;z-index:9998;overflow:auto;padding:34px}
+#motoristasModule .mcard{max-width:1050px;margin:20px auto;background:#fff;border-radius:18px;padding:28px;box-shadow:0 10px 30px #0001}
+#motoristasModule h2{color:#0b4f88;margin:0 0 22px}
+#mgrid{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+#mgrid .full{grid-column:1/-1}
+#motoristasModule label{display:block;font-size:12px;font-weight:700;color:#27445f;margin-bottom:6px}
+#motoristasModule input{width:100%;box-sizing:border-box;border:1px solid #c9d9e8;border-radius:9px;padding:12px;font-size:15px}
+#motoristasModule textarea{width:100%;box-sizing:border-box;border:1px solid #c9d9e8;border-radius:9px;padding:12px;font-size:15px;min-height:80px}
+#motoristasModule .mactions{display:flex;gap:10px;margin:18px 0}
+#motoristasModule button{border:0;border-radius:9px;padding:12px 18px;font-weight:700;cursor:pointer;background:#1261a0;color:#fff}
+#motoristasModule .secondary{background:#e8f0f7;color:#16466b}
+#motoristasModule #mMsg{min-height:24px;font-weight:700;margin-bottom:10px}
+#motoristasModule table{width:100%;border-collapse:collapse;margin-top:14px}
+#motoristasModule th,#motoristasModule td{padding:11px;border-bottom:1px solid #e5edf4;text-align:left}
+#motoristasModule th{color:#355b79;font-size:12px;text-transform:uppercase}
+#mClose{float:right;background:#e8f0f7;color:#16466b}
+@media(max-width:700px){#motoristasModule{padding:12px}#mgrid{grid-template-columns:1fr}#mgrid .full{grid-column:auto}}
+</style>
+<section id="motoristasModule">
+  <div class="mcard">
+    <button id="mClose">Fechar</button>
+    <h2>👤 Cadastro de Motoristas</h2>
+    <div id="mgrid">
+      <div><label>Nome completo *</label><input id="mNome" placeholder="Nome do motorista"></div>
+      <div><label>CPF / Documento</label><input id="mCpf" placeholder="Opcional"></div>
+      <div><label>Telefone</label><input id="mTelefone" placeholder="Opcional"></div>
+      <div><label>Transportadora</label><input id="mTransportadora" placeholder="Opcional"></div>
+      <div class="full"><label>Observações</label><textarea id="mObs" placeholder="Opcional"></textarea></div>
+    </div>
+    <div class="mactions">
+      <button id="mSalvar">Salvar motorista</button>
+      <button class="secondary" id="mLimpar">Limpar</button>
+      <button class="secondary" id="mAtualizar">Atualizar lista</button>
+    </div>
+    <div id="mMsg"></div>
+    <table>
+      <thead><tr><th>Nome</th><th>CPF / Documento</th><th>Telefone</th><th>Transportadora</th></tr></thead>
+      <tbody id="mRows"></tbody>
+    </table>
+  </div>
+</section>
+<script>
+(function(){
+  const SUPABASE_URL="https://sybsplfizklerwoxulca.supabase.co";
+  const SUPABASE_KEY="sb_publishable_FLT3evY8UiqK4_ZxsH-Zfw_iWKhfttP";
+  const mod=document.getElementById("motoristasModule"); if(!mod)return;
+  const $=id=>document.getElementById(id);
+  function msg(t,ok=false){$("mMsg").textContent=t;$("mMsg").style.color=ok?"#176b3a":"#a22";}
+  async function headers(){
+    const {data}=await sb.auth.getSession();
+    const token=data.session?.access_token;
+    if(!token) throw Error("Sessão expirada. Faça login novamente.");
+    return {"apikey":SUPABASE_KEY,"Authorization":"Bearer "+token,"Content-Type":"application/json"};
+  }
+  async function getEmpresa(){
+    const {data}=await sb.auth.getSession();
+    if(!data.session?.user?.id) throw Error("Sessão expirada. Faça login novamente.");
+    const h=await headers();
+    const r=await fetch(SUPABASE_URL+"/rest/v1/usuarios?select=empresa_id&auth_user_id=eq."+encodeURIComponent(data.session.user.id),{headers:h});
+    if(!r.ok) throw Error("Não foi possível identificar a empresa.");
+    const a=await r.json(); if(!a.length) throw Error("Usuário não vinculado a uma empresa.");
+    return a[0].empresa_id;
+  }
+  async function listar(){
+    try{
+      const h=await headers();
+      const r=await fetch(SUPABASE_URL+"/rest/v1/motoristas?select=id,nome_completo,cpf_documento,telefone,transportadora_id,observacoes,ativo&order=nome_completo",{headers:h});
+      if(!r.ok) throw Error(await r.text());
+      const a=await r.json();
+      const cr=await fetch(SUPABASE_URL+"/rest/v1/clientes_fornecedores?select=id,nome_razao_social&order=nome_razao_social",{headers:h});
+      const c=cr.ok?await cr.json():[];
+      const nomes=Object.fromEntries(c.map(x=>[x.id,x.nome_razao_social]));
+      $("mRows").innerHTML=a.map(x=>`<tr><td>${x.nome_completo||""}</td><td>${x.cpf_documento||"—"}</td><td>${x.telefone||"—"}</td><td>${x.transportadora_id?(nomes[x.transportadora_id]||""):"—"}</td></tr>`).join("");
+    }catch(e){msg(e.message)}
+  }
+  async function salvar(){
+    try{
+      const nome=$("mNome").value.trim();
+      if(!nome)return msg("Informe o nome completo.");
+      const empresa_id=await getEmpresa(), h=await headers();
+      const dup=await fetch(SUPABASE_URL+"/rest/v1/motoristas?select=id&nome_completo=eq."+encodeURIComponent(nome)+"&limit=1",{headers:h});
+      if(!dup.ok)throw Error(await dup.text());
+      if((await dup.json()).length)return msg("Este motorista já está cadastrado nesta empresa.");
+      let transportadora_id=null;
+      const trNome=$("mTransportadora").value.trim();
+      if(trNome){
+        const q=await fetch(SUPABASE_URL+"/rest/v1/clientes_fornecedores?select=id&empresa_id=eq."+encodeURIComponent(empresa_id)+"&nome_razao_social=eq."+encodeURIComponent(trNome)+"&limit=1",{headers:h});
+        if(!q.ok)throw Error(await q.text());
+        const qa=await q.json();
+        if(qa.length) transportadora_id=qa[0].id;
+        else{
+          const cr=await fetch(SUPABASE_URL+"/rest/v1/clientes_fornecedores",{method:"POST",headers:{...h,"Prefer":"return=representation"},body:JSON.stringify({empresa_id,tipo:"FORNECEDOR",nome_razao_social:trNome})});
+          if(!cr.ok)throw Error(await cr.text());
+          const ca=await cr.json();transportadora_id=ca[0]?.id||null;
+        }
+      }
+      const body={empresa_id,nome_completo:nome,cpf_documento:$("mCpf").value.trim()||null,telefone:$("mTelefone").value.trim()||null,transportadora_id,observacoes:$("mObs").value.trim()||null,ativo:true};
+      const r=await fetch(SUPABASE_URL+"/rest/v1/motoristas",{method:"POST",headers:{...h,"Prefer":"return=minimal"},body:JSON.stringify(body)});
+      if(!r.ok)throw Error(await r.text());
+      msg("Motorista salvo com sucesso.",true);
+      ["mNome","mCpf","mTelefone","mTransportadora","mObs"].forEach(id=>$(id).value="");
+      await listar();
+    }catch(e){msg(e.message)}
+  }
+  $("mSalvar").addEventListener("click",salvar);
+  $("mAtualizar").addEventListener("click",listar);
+  $("mLimpar").addEventListener("click",()=>{["mNome","mCpf","mTelefone","mTransportadora","mObs"].forEach(id=>$(id).value="");msg("")});
+  $("mClose").addEventListener("click",()=>mod.style.display="none");
+  const btn=document.createElement("button");
+  btn.id="mAccess";
+  btn.textContent="👤 Motoristas";
+  btn.style.cssText="display:none!important";
+  btn.onclick=()=>{mod.style.display="block";listar()};
+  document.body.appendChild(btn);
+})();
+</script>
+
+
+<style>
+#cfModule{display:none;position:fixed;inset:0;background:#eef5fb;z-index:9997;overflow:auto;padding:34px}
+#cfModule .cfcard{max-width:1100px;margin:20px auto;background:#fff;border-radius:18px;padding:28px;box-shadow:0 10px 30px #0001}
+#cfModule h2{color:#0b4f88;margin:0 0 22px}
+#cfgrid{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+#cfgrid .full{grid-column:1/-1}
+#cfModule label{display:block;font-size:12px;font-weight:700;color:#27445f;margin-bottom:6px}
+#cfModule input,#cfModule select,#cfModule textarea{width:100%;box-sizing:border-box;border:1px solid #c9d9e8;border-radius:9px;padding:12px;font-size:15px}
+#cfModule textarea{min-height:80px}
+#cfModule .cfactions{display:flex;gap:10px;margin:18px 0}
+#cfModule button{border:0;border-radius:9px;padding:12px 18px;font-weight:700;cursor:pointer;background:#1261a0;color:#fff}
+#cfModule .secondary,#cfClose{background:#e8f0f7;color:#16466b}
+#cfMsg{min-height:24px;font-weight:700;margin-bottom:10px}
+#cfModule table{width:100%;border-collapse:collapse;margin-top:14px}
+#cfModule th,#cfModule td{padding:11px;border-bottom:1px solid #e5edf4;text-align:left}
+#cfModule th{color:#355b79;font-size:12px;text-transform:uppercase}
+#cfClose{float:right}
+@media(max-width:700px){#cfModule{padding:12px}#cfgrid{grid-template-columns:1fr}#cfgrid .full{grid-column:auto}}
+</style>
+<section id="cfModule">
+<div class="cfcard">
+<button id="cfClose">Fechar</button>
+<h2>🏢 Clientes / Fornecedores</h2>
+<div id="cfgrid">
+<div><label>Tipo *</label><select id="cfTipo"><option value="">Selecione</option><option value="CLIENTE">Cliente</option><option value="FORNECEDOR">Fornecedor</option></select></div>
+<div><label>Código interno</label><input id="cfCodigo" placeholder="Opcional"></div>
+<div class="full"><label>Nome / Razão Social *</label><input id="cfNome" placeholder="Nome ou razão social"></div>
+<div><label>Nome Fantasia</label><input id="cfFantasia" placeholder="Opcional"></div>
+<div><label>Contato</label><input id="cfContato" placeholder="Opcional"></div>
+<div><label>Telefone</label><input id="cfTelefone" placeholder="Opcional"></div>
+<div><label>E-mail</label><input id="cfEmail" type="email" placeholder="Opcional"></div>
+<div class="full"><label>Observações</label><textarea id="cfObs" placeholder="Opcional"></textarea></div>
+</div>
+<div class="cfactions"><button id="cfSalvar">Salvar cadastro</button><button class="secondary" id="cfLimpar">Limpar</button><button class="secondary" id="cfAtualizar">Atualizar lista</button></div>
+<div id="cfMsg"></div>
+<table><thead><tr><th>Tipo</th><th>Nome / Razão Social</th><th>Nome Fantasia</th><th>Contato</th><th>Telefone</th><th>E-mail</th></tr></thead><tbody id="cfRows"></tbody></table>
+</div>
+</section>
+<script>
+(function(){
+const URL="https://sybsplfizklerwoxulca.supabase.co",KEY="sb_publishable_FLT3evY8UiqK4_ZxsH-Zfw_iWKhfttP";
+const $=id=>document.getElementById(id), mod=$("cfModule"); if(!mod)return;
+function msg(t,ok=false){$("cfMsg").textContent=t;$("cfMsg").style.color=ok?"#176b3a":"#a22";}
+async function hdr(){const {data}=await sb.auth.getSession();const token=data.session?.access_token;if(!token)throw Error("Sessão expirada. Faça login novamente.");return {"apikey":KEY,"Authorization":"Bearer "+token,"Content-Type":"application/json"}}
+async function getEmpresa(){const {data}=await sb.auth.getSession();const uid=data.session?.user?.id;if(!uid)throw Error("Sessão expirada. Faça login novamente.");const h=await hdr();const r=await fetch(URL+"/rest/v1/usuarios?select=empresa_id&auth_user_id=eq."+encodeURIComponent(uid),{headers:h});if(!r.ok)throw Error("Não foi possível identificar a empresa.");const a=await r.json();if(!a.length)throw Error("Usuário não vinculado a uma empresa.");return a[0].empresa_id;}
+async function list(){try{const h=await hdr();const r=await fetch(URL+"/rest/v1/clientes_fornecedores?select=tipo,nome_razao_social,nome_fantasia,contato,telefone,email,ativo&order=nome_razao_social",{headers:h});if(!r.ok)throw Error(await r.text());const a=await r.json();$("cfRows").innerHTML=a.map(x=>`<tr><td>${x.tipo||""}</td><td>${x.nome_razao_social||""}</td><td>${x.nome_fantasia||"—"}</td><td>${x.contato||"—"}</td><td>${x.telefone||"—"}</td><td>${x.email||"—"}</td></tr>`).join("")}catch(e){msg(e.message)}}
+async function save(){try{const tipo=$("cfTipo").value,nome=$("cfNome").value.trim();if(!tipo)return msg("Selecione Cliente ou Fornecedor.");if(!nome)return msg("Informe o Nome / Razão Social.");const h=await hdr();const empresa_id=await getEmpresa();const q=await fetch(URL+"/rest/v1/clientes_fornecedores?select=id&nome_razao_social=eq."+encodeURIComponent(nome)+"&tipo=eq."+tipo+"&limit=1",{headers:h});if(!q.ok)throw Error(await q.text());if((await q.json()).length)return msg("Este cadastro já existe nesta empresa.");const body={empresa_id,tipo,nome_razao_social:nome,nome_fantasia:$("cfFantasia").value.trim()||null,codigo_interno:$("cfCodigo").value.trim()||null,contato:$("cfContato").value.trim()||null,telefone:$("cfTelefone").value.trim()||null,email:$("cfEmail").value.trim()||null,observacoes:$("cfObs").value.trim()||null,ativo:true};const r=await fetch(URL+"/rest/v1/clientes_fornecedores",{method:"POST",headers:{...h,"Prefer":"return=minimal"},body:JSON.stringify(body)});if(!r.ok)throw Error(await r.text());msg("Cliente/Fornecedor salvo com sucesso.",true);["cfCodigo","cfNome","cfFantasia","cfContato","cfTelefone","cfEmail","cfObs"].forEach(id=>$(id).value="");$("cfTipo").value="";await list()}catch(e){msg(e.message)}}
+$("cfSalvar").onclick=save;$("cfAtualizar").onclick=list;$("cfLimpar").onclick=()=>{["cfCodigo","cfNome","cfFantasia","cfContato","cfTelefone","cfEmail","cfObs"].forEach(id=>$(id).value="");$("cfTipo").value="";msg("")};$("cfClose").onclick=()=>mod.style.display="none";
+const b=document.createElement("button");b.id="cfAccess";b.textContent="🏢 Clientes / Fornecedores";b.style.cssText="display:none!important";b.onclick=()=>{mod.style.display="block";list()};document.body.appendChild(b);
+})();
+</script>
+
+<script>
+(function(){
+  const SUPABASE_URL = "https://sybsplfizklerwoxulca.supabase.co";
+  const SUPABASE_KEY = "sb_publishable_FLT3evY8UiqK4_ZxsH-Zfw_iWKhfttP";
+  const mod = document.getElementById("veiculosModule");
+  if(!mod) return;
+  const $=id=>document.getElementById(id);
+  function msg(t,ok=false){$("vMsg").textContent=t;$("vMsg").style.color=ok?"#176b3a":"#a22";}
+  async function headers(){const {data}=await sb.auth.getSession(); return {"apikey":SUPABASE_KEY,"Authorization":"Bearer "+(data.session?.access_token||""),"Content-Type":"application/json"};}
+  async function getEmpresa(){
+    const {data:sd}=await sb.auth.getSession(); const token=sd.session?.access_token; if(!token) throw Error("Faça login novamente.");
+    const r=await fetch(SUPABASE_URL+"/rest/v1/usuarios?select=empresa_id&auth_user_id=eq."+encodeURIComponent(sd.session.user.id),{headers:await headers()});
+    if(!r.ok) throw Error("Não foi possível identificar a empresa.");
+    const a=await r.json(); if(!a.length) throw Error("Usuário não vinculado a uma empresa.");
+    return a[0].empresa_id;
+  }
+  async function listar(){
+    try{
+      const h=await headers(), r=await fetch(SUPABASE_URL+"/rest/v1/veiculos?select=placa,tipo,modelo,transportadora_id,observacoes&order=placa",{headers:h});
+      if(!r.ok) throw Error(await r.text());
+      const a=await r.json();
+      const cr=await fetch(SUPABASE_URL+"/rest/v1/clientes_fornecedores?select=id,nome_razao_social&order=nome_razao_social",{headers:h});
+      const c=cr.ok?await cr.json():[];
+      const nomes=Object.fromEntries(c.map(x=>[x.id,x.nome_razao_social]));
+      $("vRows").innerHTML=a.map(v=>`<tr><td>${v.placa||""}</td><td>${v.tipo||""}</td><td>${v.modelo||""}</td><td>${v.transportadora_id?(nomes[v.transportadora_id]||""): ""}</td></tr>`).join("");
+    }catch(e){msg(e.message)}
+  }
+  async function salvar(){
+    try{
+      const placa=$("vPlaca").value.trim().toUpperCase(), tipo=$("vTipo").value;
+      if(!placa||!tipo) return msg("Informe a placa e o tipo.");
+      const empresa_id=await getEmpresa();
+      let transportadora_id=null;
+      const trNome=$("vTransportadora").value.trim();
+      if(trNome){
+        const q=await fetch(SUPABASE_URL+"/rest/v1/clientes_fornecedores?select=id&empresa_id=eq."+encodeURIComponent(empresa_id)+"&nome_razao_social=eq."+encodeURIComponent(trNome)+"&limit=1",{headers:await headers()});
+        if(!q.ok) throw Error(await q.text());
+        const qa=await q.json();
+        if(qa.length) transportadora_id=qa[0].id;
+        else{
+          const cr=await fetch(SUPABASE_URL+"/rest/v1/clientes_fornecedores",{method:"POST",headers:{...(await headers()),"Prefer":"return=representation"},body:JSON.stringify({empresa_id,tipo:"FORNECEDOR",nome_razao_social:trNome})});
+          if(!cr.ok) throw Error(await cr.text());
+          const ca=await cr.json(); transportadora_id=ca[0]?.id||null;
+        }
+      }
+      const body={empresa_id,placa,tipo,modelo:$("vModelo").value.trim()||null,transportadora_id,observacoes:$("vObs").value.trim()||null};
+      const r=await fetch(SUPABASE_URL+"/rest/v1/veiculos",{method:"POST",headers:{...(await headers()),"Prefer":"return=minimal"},body:JSON.stringify(body)});
+      if(!r.ok) throw Error(await r.text());
+      msg("Veículo salvo com sucesso.",true); ["vPlaca","vModelo","vTransportadora","vObs"].forEach(id=>$(id).value="");$("vTipo").value="";listar();
+    }catch(e){msg(e.message)}
+  }
+  $("vSalvar").addEventListener("click",salvar);$("vAtualizar").addEventListener("click",listar);
+  $("vLimpar").addEventListener("click",()=>{["vPlaca","vModelo","vTransportadora","vObs"].forEach(id=>$(id).value="");$("vTipo").value="";msg("")});
+  // Show when an existing navigation element contains "veículo"; otherwise provide a small floating access button.
+  const btn=document.createElement("button");btn.id="vAccess2";btn.textContent="🚛 Veículos";btn.style.cssText="display:none!important";
+  btn.onclick=()=>{mod.style.display=mod.style.display==="none"?"block":"none";if(mod.style.display==="block")listar()};document.body.appendChild(btn);
+})();
+
+// Mantém a sessão do Supabase ao recarregar a página.
+document.addEventListener('DOMContentLoaded',()=>{restoreSession();});
+</script>
+</body></html>
