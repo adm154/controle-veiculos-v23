@@ -75,9 +75,106 @@ async function getEmpresa(){
   if(!a.length) throw Error('Usuário não vinculado a uma empresa.');
   return a[0].empresa_id;
 }
-const authEmails={EMP001:{admin:'admin@alfa.local',portaria:'portaria@alfa.local'},EMP002:{admin:'admin@beta.local'}};
+
 if(location.protocol==='file:'){document.getElementById('loginError').textContent='Abra este aplicativo pelo endereço http://localhost:5501 (não diretamente pelo arquivo HTML).';}
-async function login(){if(location.protocol==='file:'){document.getElementById('loginError').textContent='Este arquivo precisa ser aberto pelo servidor local em http://localhost:5501.';return}const c=document.getElementById('loginCompany').value;const u=document.getElementById('loginUser').value.trim().toLowerCase();const p=document.getElementById('loginPass').value.trim();const err=document.getElementById('loginError');err.textContent='';let email=authEmails[c]?.[u];if(!email){const {data:lu,error:le}=await sb.from('usuarios').select('email,ativo,empresa_id,empresas(codigo)').eq('username',u).eq('empresas.codigo',c).maybeSingle();if(le){console.error(le);err.textContent='Não foi possível localizar o usuário.';return}if(!lu||!lu.email){err.textContent='Usuário não cadastrado para esta empresa.';return}if(lu.ativo===false){err.textContent='Usuário inativo. Procure o Administrador da empresa.';return}email=lu.email}const {data,error}=await sb.auth.signInWithPassword({email,password:p});if(error){err.textContent='Login recusado pelo Supabase: '+(error.message||'verifique e-mail e senha.');console.error('Supabase Auth error',error);return}const {data:profile,error:pe}=await sb.from('usuarios').select('id,nome_completo,username,perfil,empresa_id,empresas(codigo,nome_fantasia)').eq('auth_user_id',data.user.id).single();if(pe||!profile||profile.empresas?.codigo!==c){await sb.auth.signOut();err.textContent='Usuário não pertence à empresa selecionada.';return}const perfilAtual=String(profile.perfil||'').toUpperCase();if(!['ADMINISTRADOR','ADMINISTRATIVO','PORTARIA'].includes(perfilAtual)){await sb.auth.signOut();err.textContent='Perfil de usuário inválido.';return}session={company:c,user:profile.username,name:profile.nome_completo,role:perfilAtual,authId:data.user.id,empresaId:profile.empresa_id,email:email};document.getElementById('login').classList.add('hidden');document.getElementById('app').classList.remove('hidden');document.getElementById('topUser').textContent=session.name+' • '+session.role;document.getElementById('topCompany').textContent=profile.empresas.nome_fantasia+' ('+c+')';buildNav();await refreshFromSupabase();go('home')}
+async function login(){
+  if(location.protocol==='file:'){
+    document.getElementById('loginError').textContent='Este arquivo precisa ser aberto pelo aplicativo.';
+    return;
+  }
+
+  const c=document.getElementById('loginCompany').value.trim();
+  const u=document.getElementById('loginUser').value.trim().toLowerCase();
+  const p=document.getElementById('loginPass').value.trim();
+  const err=document.getElementById('loginError');
+
+  err.textContent='';
+
+  if(!c||!u||!p){
+    err.textContent='Informe empresa, usuário e senha.';
+    return;
+  }
+
+  const {data:empresa,error:ee}=await sb
+    .from('empresas')
+    .select('id,codigo,nome_fantasia,razao_social')
+    .or(`codigo.ilike.${c},nome_fantasia.ilike.${c},razao_social.ilike.${c}`)
+    .maybeSingle();
+
+  if(ee||!empresa){
+    err.textContent='Empresa, usuário ou senha inválidos.';
+    return;
+  }
+
+  const codigoEmpresa=empresa.codigo;
+
+  const {data:lu,error:le}=await sb
+    .from('usuarios')
+    .select('email,ativo,empresa_id')
+    .eq('username',u)
+    .eq('empresa_id',empresa.id)
+    .maybeSingle();
+
+  if(le||!lu||!lu.email||lu.ativo===false){
+    err.textContent='Empresa, usuário ou senha inválidos.';
+    return;
+  }
+
+  const {data,error}=await sb.auth.signInWithPassword({
+    email:lu.email,
+    password:p
+  });
+
+  if(error){
+    err.textContent='Empresa, usuário ou senha inválidos.';
+    console.error('Supabase Auth error',error);
+    return;
+  }
+
+  const {data:profile,error:pe}=await sb
+    .from('usuarios')
+    .select('id,nome_completo,username,perfil,empresa_id,empresas(codigo,nome_fantasia)')
+    .eq('auth_user_id',data.user.id)
+    .single();
+
+  if(
+    pe||
+    !profile||
+    profile.empresa_id!==empresa.id||
+    profile.empresas?.codigo!==codigoEmpresa
+  ){
+    await sb.auth.signOut();
+    err.textContent='Empresa, usuário ou senha inválidos.';
+    return;
+  }
+
+  const perfilAtual=String(profile.perfil||'').toUpperCase();
+
+  if(!['ADMINISTRADOR','ADMINISTRATIVO','PORTARIA'].includes(perfilAtual)){
+    await sb.auth.signOut();
+    err.textContent='Perfil de usuário inválido.';
+    return;
+  }
+
+  session={
+    company:codigoEmpresa,
+    user:profile.username,
+    name:profile.nome_completo,
+    role:perfilAtual,
+    authId:data.user.id,
+    empresaId:profile.empresa_id,
+    email:lu.email
+  };
+
+  document.getElementById('login').classList.add('hidden');
+  document.getElementById('app').classList.remove('hidden');
+  document.getElementById('topUser').textContent=session.name+' • '+session.role;
+  document.getElementById('topCompany').textContent=profile.empresas.nome_fantasia+' ('+codigoEmpresa+')';
+
+  buildNav();
+  await refreshFromSupabase();
+  go('home');
+}
 async function restoreSession(){
   try{
     const {data,error}=await sb.auth.getSession();
