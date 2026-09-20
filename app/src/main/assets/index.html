@@ -95,7 +95,7 @@ async function login(){
     return;
   }
 
-  try {
+  try{
     const {data:empresa,error:ee}=await sb
       .from('empresas')
       .select('id,codigo,nome_fantasia,razao_social')
@@ -109,216 +109,61 @@ async function login(){
 
     const {data:usr,error:ue}=await sb
       .from('usuarios')
-      .select('id,empresa_id,nome_completo,username,senha,perfil')
+      .select('id,empresa_id,nome_completo,username,perfil,email,auth_user_id')
       .eq('empresa_id',empresa.id)
       .eq('username',u)
-      .eq('senha',p)
       .maybeSingle();
 
-    if(ue||!usr){
+    if(ue||!usr||!usr.email){
       err.textContent='Empresa, usuário ou senha inválidos.';
       return;
     }
 
-    // Salva a sessão do usuário no aplicativo
-    localStorage.setItem('user', JSON.stringify(usr));
-    localStorage.setItem('company', JSON.stringify(empresa));
+    const {data,error}=await sb.auth.signInWithPassword({
+      email:usr.email,
+      password:p
+    });
 
-    // Força o recarregamento imediato para aplicar a sessão
-    window.location.href = window.location.pathname;
-
-  } catch(e) {
-    err.textContent = 'Erro de conexão no aplicativo.';
-  }
-}
-  }
-
-  const c=document.getElementById('loginCompany').value.trim();
-  const u=document.getElementById('loginUser').value.trim().toLowerCase();
-  const p=document.getElementById('loginPass').value.trim();
-  const err=document.getElementById('loginError');
-
-  err.textContent='';
-
-  if(!c||!u||!p){
-    err.textContent='Informe empresa, usuário e senha.';
-    return;
-  }
-
-  try {
-    const {data:empresa,error:ee}=await sb
-      .from('empresas')
-      .select('id,codigo,nome_fantasia,razao_social')
-      .eq('codigo',c.toUpperCase())
-      .maybeSingle();
-
-    if(ee||!empresa){
+    if(error||!data?.user){
       err.textContent='Empresa, usuário ou senha inválidos.';
       return;
     }
 
-    const {data:usr,error:ue}=await sb
-      .from('usuarios')
-      .select('id,empresa_id,nome_completo,username,senha,perfil')
-      .eq('empresa_id',empresa.id)
-      .eq('username',u)
-      .eq('senha',p)
-      .maybeSingle();
+    const perfilAtual=String(usr.perfil||'').toUpperCase();
 
-    if(ue||!usr){
-      err.textContent='Empresa, usuário ou senha inválidos.';
+    if(!['ADMINISTRADOR','ADMINISTRATIVO','PORTARIA'].includes(perfilAtual)){
+      await sb.auth.signOut();
+      err.textContent='Perfil de usuário inválido.';
       return;
     }
 
-    // Salva os dados na memória do aplicativo
-    localStorage.setItem('user', JSON.stringify(usr));
-    localStorage.setItem('company', JSON.stringify(empresa));
+    session={
+      company:empresa.codigo,
+      user:usr.username,
+      name:usr.nome_completo,
+      role:perfilAtual,
+      authId:data.user.id,
+      empresaId:usr.empresa_id,
+      email:usr.email
+    };
 
-    // Abre a tela principal do sistema sem recarregar a página
-    const loginCard = document.getElementById('loginCard');
-    const appContent = document.getElementById('appContent');
-    
-    if(loginCard) loginCard.style.display = 'none';
-    if(appContent) appContent.style.display = 'block';
+    localStorage.setItem('user',JSON.stringify(usr));
+    localStorage.setItem('company',JSON.stringify(empresa));
 
-    if(typeof initApp === 'function') initApp();
+    document.getElementById('login').classList.add('hidden');
+    document.getElementById('app').classList.remove('hidden');
 
-  } catch(e) {
-    err.textContent = 'Erro de conexão no aplicativo.';
+    document.getElementById('topUser').textContent=session.name+' • '+session.role;
+    document.getElementById('topCompany').textContent=empresa.nome_fantasia+' ('+empresa.codigo+')';
+
+    buildNav();
+    await refreshFromSupabase();
+    go('home');
+
+  }catch(e){
+    console.error(e);
+    err.textContent='Erro de conexão no aplicativo.';
   }
-
-  const c=document.getElementById('loginCompany').value.trim();
-  const u=document.getElementById('loginUser').value.trim().toLowerCase();
-  const p=document.getElementById('loginPass').value.trim();
-  const err=document.getElementById('loginError');
-
-  err.textContent='';
-
-  if(!c||!u||!p){
-    err.textContent='Informe empresa, usuário e senha.';
-    return;
-  }
-
-  const {data:empresa,error:ee}=await sb
-    .from('empresas')
-    .select('id,codigo,nome_fantasia,razao_social')
-    .eq('codigo',c.toUpperCase())
-    .maybeSingle();
-
-  if(ee||!empresa){
-    err.textContent='Empresa, usuário ou senha inválidos.';
-    return;
-  }
-
-  const {data:usr,error:ue}=await sb
-    .from('usuarios')
-    .select('id,empresa_id,nome_completo,username,senha,perfil')
-    .eq('empresa_id',empresa.id)
-    .eq('username',u)
-    .eq('senha',p)
-    .maybeSingle();
-
-  if(ue||!usr){
-    err.textContent='Empresa, usuário ou senha inválidos.';
-    return;
-  }
-
-  localStorage.setItem('user', JSON.stringify(usr));
-  location.reload();
-}
-  }
-
-  const c=document.getElementById('loginCompany').value.trim();
-  const u=document.getElementById('loginUser').value.trim().toLowerCase();
-  const p=document.getElementById('loginPass').value.trim();
-  const err=document.getElementById('loginError');
-
-  err.textContent='';
-
-  if(!c||!u||!p){
-    err.textContent='Informe empresa, usuário e senha.';
-    return;
-  }
-
-  const {data:empresa,error:ee}=await sb
-  .from('empresas')
-  .select('id,codigo,nome_fantasia,razao_social')
-  .eq('codigo',c.toUpperCase())
-  .maybeSingle();
-
-  if(ee||!empresa){
-    err.textContent='Empresa, usuário ou senha inválidos.';
-    return;
-  }
-
-  const codigoEmpresa=empresa.codigo;
-
-  const {data:lu,error:le}=await sb
-    .from('usuarios')
-    .select('email,ativo,empresa_id')
-    .eq('username',u)
-    .eq('empresa_id',empresa.id)
-    .maybeSingle();
-
-  if(le||!lu||!lu.email||lu.ativo===false){
-    err.textContent='Empresa, usuário ou senha inválidos.';
-    return;
-  }
-
-  const {data,error}=await sb.auth.signInWithPassword({
-    email:lu.email,
-    password:p
-  });
-
-  if(error){
-    err.textContent='Empresa, usuário ou senha inválidos.';
-    console.error('Supabase Auth error',error);
-    return;
-  }
-
-  const {data:profile,error:pe}=await sb
-    .from('usuarios')
-    .select('id,nome_completo,username,perfil,empresa_id,empresas(codigo,nome_fantasia)')
-    .eq('auth_user_id',data.user.id)
-    .single();
-
-  if(
-    pe||
-    !profile||
-    profile.empresa_id!==empresa.id||
-    profile.empresas?.codigo!==codigoEmpresa
-  ){
-    await sb.auth.signOut();
-    err.textContent='Empresa, usuário ou senha inválidos.';
-    return;
-  }
-
-  const perfilAtual=String(profile.perfil||'').toUpperCase();
-
-  if(!['ADMINISTRADOR','ADMINISTRATIVO','PORTARIA'].includes(perfilAtual)){
-    await sb.auth.signOut();
-    err.textContent='Perfil de usuário inválido.';
-    return;
-  }
-
-  session={
-    company:codigoEmpresa,
-    user:profile.username,
-    name:profile.nome_completo,
-    role:perfilAtual,
-    authId:data.user.id,
-    empresaId:profile.empresa_id,
-    email:lu.email
-  };
-
-  document.getElementById('login').classList.add('hidden');
-  document.getElementById('app').classList.remove('hidden');
-  document.getElementById('topUser').textContent=session.name+' • '+session.role;
-  document.getElementById('topCompany').textContent=profile.empresas.nome_fantasia+' ('+codigoEmpresa+')';
-
-  buildNav();
-  await refreshFromSupabase();
-  go('home');
 }
 async function restoreSession(){
   try{
