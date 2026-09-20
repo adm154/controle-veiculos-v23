@@ -16,4 +16,5 @@ android {
 }
 
 dependencies {
+    implementation("androidx.webkit:webkit:1.13.0")
 }
