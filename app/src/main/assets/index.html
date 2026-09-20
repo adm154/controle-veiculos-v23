@@ -96,10 +96,10 @@ async function login(){
   }
 
   const {data:empresa,error:ee}=await sb
-    .from('empresas')
-    .select('id,codigo,nome_fantasia,razao_social')
-    .or(`codigo.ilike.${c},nome_fantasia.ilike.${c},razao_social.ilike.${c}`)
-    .maybeSingle();
+  .from('empresas')
+  .select('id,codigo,nome_fantasia,razao_social')
+  .eq('codigo',c.toUpperCase())
+  .maybeSingle();
 
   if(ee||!empresa){
     err.textContent='Empresa, usuário ou senha inválidos.';
