@@ -96,13 +96,40 @@ async function login(){
   }
 
   try{
+    /*
+      TESTE DE LOGIN BRANKOR
+
+      O antigo EMP001 será identificado pelo usuário através de:
+      BRANKOR INDUSTRIA
+      ou
+      43131117000117
+
+      O código interno da empresa continua sendo EMP001,
+      preservando a estrutura atual do sistema.
+    */
+
+    const entradaEmpresa=c.trim();
+    const entradaNormalizada=entradaEmpresa
+      .toUpperCase()
+      .replace(/\s+/g,' ');
+
+    let codigoEmpresa=entradaNormalizada;
+
+    if(
+      entradaNormalizada==='BRANKOR INDUSTRIA' ||
+      entradaEmpresa.replace(/\D/g,'')==='43131117000117'
+    ){
+      codigoEmpresa='EMP001';
+    }
+
     const {data:empresa,error:ee}=await sb
       .from('empresas')
       .select('id,codigo,nome_fantasia,razao_social')
-      .eq('codigo',c.toUpperCase())
+      .eq('codigo',codigoEmpresa)
       .maybeSingle();
 
     if(ee||!empresa){
+      console.error('Erro ao localizar empresa:',ee);
       err.textContent='Empresa, usuário ou senha inválidos.';
       return;
     }
@@ -115,7 +142,8 @@ async function login(){
       .maybeSingle();
 
     if(ue||!usr||!usr.email){
-      err.textContent='TESTE: usuário não encontrado ou sem e-mail.';
+      console.error('Erro ao localizar usuário:',ue);
+      err.textContent='Empresa, usuário ou senha inválidos.';
       return;
     }
 
@@ -125,6 +153,7 @@ async function login(){
     });
 
     if(error||!data?.user){
+      console.error('Erro no Supabase Auth:',error);
       err.textContent='Empresa, usuário ou senha inválidos.';
       return;
     }
@@ -153,15 +182,18 @@ async function login(){
     document.getElementById('login').classList.add('hidden');
     document.getElementById('app').classList.remove('hidden');
 
-    document.getElementById('topUser').textContent=session.name+' • '+session.role;
-    document.getElementById('topCompany').textContent=empresa.nome_fantasia+' ('+empresa.codigo+')';
+    document.getElementById('topUser').textContent=
+      session.name+' • '+session.role;
+
+    document.getElementById('topCompany').textContent=
+      'BRANKOR INDUSTRIA ('+empresa.codigo+')';
 
     buildNav();
     await refreshFromSupabase();
     go('home');
 
   }catch(e){
-    console.error(e);
+    console.error('Erro no login:',e);
     err.textContent='Erro de conexão no aplicativo.';
   }
 }
